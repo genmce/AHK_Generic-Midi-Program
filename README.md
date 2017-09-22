@@ -1,5 +1,6 @@
 # AHK_Generic-Midi-Program
-Autohotkey midi manipulation, keystroke to midi + midi to keystroke, Mouse to Midi and joystick to midi
+Autohotkey midi manipulation, keystroke to midi + midi to keystroke, Mouse to Midi and joystick to midi.
+
 Windows only
 Generic Midi Program (originally from 2010) Ansi 32bit ahk version 
   Basic structural framework for a midi program in ahk.
