@@ -1,8 +1,12 @@
 
 /* 
-; 	Last edited 9/24/2010 6:21 PM by genmce
+; Last edited 12/15/2018 4:38 PM by genmce
+adding comments for clarity
+speeding up timer for faster moves
+ need to revise to use sendcc method instead of midioutshort message for clarity
 
-	1st method for generating CC's from keyboard push.
+
+	1st method for generating CC's from keystroke.
 
 	All the code to generate the hotkey, besides the midioutshort function (located in midi_under_the_hood.ahk), is contained within each hotkey definition.	
 	
@@ -22,15 +26,15 @@
 ;*		1st method - easiest to replicate
 ;*************************************************
 
-f7::	; hotkey taking value of cc down.
+f7::	; hotkey subtracting CC  (data byte 2) value.
 Loop	; loop to detect the state of the hotkey, held down.	
 {
 	if !GetKeyState("f7","P") 	; if key is not down, or, if key is released   
 	  break						; break out of the loop and do nothing else.
-    cc_num = 7 					; set the var to the volume cc, you could change this value in a different hotkey loop, do send a different cc# 
-    CCIntVal := CCIntVal > 0 ? CCIntVal-1 : 0                 	; check min value of 0 is reached.
-    midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) 	; Send midi output (h_midiout=port, (channel+CC statusbyte), CC_num=2lines up, CCIntVal) function located under the hood
-		; =============== needed for output gui display only
+    cc_num = 7 				; What CC (data byte1) do you wish to send?
+    CCIntVal := CCIntVal > 0 ? CCIntVal-1 : 0          ;Subtract 1 from byte 2 until min value of 0 is reached.
+    midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) 	; Send midi output (h_midiout=port, (channel+CC statusbyte), CC_num=2lines up, CCIntVal) function located in Midi_In_Out_Library.ahk
+		; =============== below is only needed MidiMonitor output gui display only
 		stb := "CC"
 		statusbyte := 176
 		chan = %channel%
@@ -38,19 +42,19 @@ Loop	; loop to detect the state of the hotkey, held down.
 		byte2 = %CCIntVal%			; see above for display of the value of the cc
 		gosub, ShowMidiOutMessage   ; run the display label to show the midi output
 		; =============== end 		
-    sleep, 20         				; wait 50 ms to run next loop to see if key is up or down.
+    sleep, 20         				; adjust this for speed 20ms is fast
    
 }
 Return
 
 
-f8:: 	; value up of cc
+f8:: 	; hotkey adding CC (data byte 2 ) value 
 Loop 	; loop to detect the state of the hotkey, held down.
 {
     if !GetKeyState("f8","P") 	; if key is not down, or, if key is released    
       break						; break out of the loop and do nothing else.	
-    cc_num = 7 					; set the var to the volume cc, you could change this value in different hotkey loop. 
-	CCIntVal := CCIntVal < 127 ? CCIntVal+1 : 127   ; check for max value 127, reached.
+    cc_num = 7 					; What CC (data byte 1) do you wish to send?
+	CCIntVal := CCIntVal < 127 ? CCIntVal+1 : 127   ; Add 1 to data byte 2 until  max value 127, reached.
 	midiOutShortMsg(h_midiout, (Channel+175), CCnum, CCIntVal)    ; midiport, cc = 176, CCmod is var above, CCIntVal in vars above
 		; =============== needed for output gui display only
 		stb := "CC"
