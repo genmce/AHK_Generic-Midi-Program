@@ -1,6 +1,9 @@
 # AHK_Generic-Midi-Program
 December 15, 2018
 I have come back to work on this project again - I would love help on it.
+
+I am fixing here  stay tuned  v.0.7 is not ready yet.
+
 Goals - 
    - Create new version 0.7
    - Clean up the code and comment better
