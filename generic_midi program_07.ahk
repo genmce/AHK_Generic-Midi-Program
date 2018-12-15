@@ -187,9 +187,7 @@ SendPC:
  */
 Return
 
-/* 
-  The rest of the script has been broken out to other parts for readability, I hope!
-*/
+
 
 ;*************************************************
 ;*              INCLUDE FILES -
