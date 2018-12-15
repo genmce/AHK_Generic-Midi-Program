@@ -21,6 +21,9 @@ Generic Midi Program (originally from 2010)
   
 Version history 
   
+ v. 0.7 December 15, 2018 - going to try to clean up this code
+    + TODO list 
+  
  v. 0.6
     + Joystick to midi 
     + Mouse to midi
