@@ -2,13 +2,12 @@
 /* 
 ; Last edited 12/15/2018 4:38 PM by genmce
 adding comments for clarity
-speeding up timer for faster moves
- need to revise to use sendcc method instead of midioutshort message for clarity
-
+speeding up timer for faster move
+; ===============need to revise to use sendcc method instead of midioutshort message for clarity
 
 	1st method for generating CC's from keystroke.
 
-	All the code to generate the hotkey, besides the midioutshort function (located in midi_under_the_hood.ahk), is contained within each hotkey definition.	
+	All the code to generate the hotkey, besides the midioutshort function (located in Midi_In_Out_Library.ahk), is contained within each hotkey definition.	
 	
 	While this method is easy to use, and reproduce more controls with, 
 	I think more flexibility as well as simultanous controls are possible with the second method (see other file hotkeyTOmidi_2.ahk)
@@ -17,7 +16,6 @@ speeding up timer for faster moves
 	The example below will generate volume cc#7,  
 	CC# 7 will decrease when F7 key is pressed  unitl 0 is reached
 	CC#7 will increase when F8 is pressed until 127 is reached
-
 
 */
 
