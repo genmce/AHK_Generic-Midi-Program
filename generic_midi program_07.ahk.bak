@@ -109,9 +109,10 @@ SendMode Input                              ; Recommended for new scripts due to
 SetWorkingDir %A_ScriptDir%       ; Ensures a consistent starting directory.
 
 if A_OSVersion in WIN_NT4,WIN_95,WIN_98,WIN_ME  ; if not xp or greater, quit program
-    MsgBox This script requires Windows 2000/XP or later.
+{   
+   MsgBox This script requires Windows 2000/XP or later.
     ExitApp
-;}
+}
 
 ;*************************************************
 version = Generic_Midi_App_0.7          
