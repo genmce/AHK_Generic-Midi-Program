@@ -8,16 +8,6 @@
 ;****************************************************************************************************************
 ;******************************************** Midi_In_Out_Library.ahk *********************************************
 /* 
-  - Midi Input Port Selection
-  - Midi Output Port Selection
-  - Write .ini to save port selections
-  - Parse Midi message input data 
-  - Midi input and output monitor gui
-*/
-
-
-
-/*  -------------- old text ----------------------------------------
     This part is meant to take care of the "under the hood" midi input and output selection and save selection to an ini file.
     Hopefully it simplifies usage for others out here trying to do things with midi and ahk.
     
@@ -137,6 +127,11 @@ gui,14:Add, ListView, x+5 r11 w220 Backgroundblack cyellow Count10 vOut1,  Event
 gui,14:Show, autosize xcenter y5, MidiMonitor
 
 Return
+
+
+
+
+
 
 
 ;*************************************************
