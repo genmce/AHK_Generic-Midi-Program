@@ -1,7 +1,23 @@
 # AHK_Generic-Midi-Program
+December 15, 2018
+I have come back to work on this project again - I would love help on it.
+Goals - 
+   - Create new version 0.7
+   - Clean up the code and comment better
+   - Rename Midi Under the hood.ahk to  Midi_In_Out_Library.ahk
+   - Document how to make hotkeys to midi with clear examples
+   - Document how to make midi to keypress with clear examples
+   - Develop a gui to create the hotkey to midi and midi to hotkey
+   
+   Questions - Does it need a midi monitor.....   
+
+
+
+---------------------------old readme ----------------------------------------------------------------
+
 Autohotkey midi manipulation, keystroke to midi + midi to keystroke, Mouse to Midi and joystick to midi.
 
-Windows only, requires autohotkey (written for Ansi 32bit ahk version) to run or comple https://autohotkey.com/
+Windows only, requires autohotkey (written for Ansi 32bit ahk version) to run or compile https://autohotkey.com/
 
 Generic Midi Program (originally from 2010)  
   Basic structural framework for a midi program in ahk.
@@ -21,9 +37,7 @@ Generic Midi Program (originally from 2010)
   
 Version history 
   
- v. 0.7 December 15, 2018 - going to try to clean up this code
-    + TODO list 
-  
+   
  v. 0.6
     + Joystick to midi 
     + Mouse to midi
