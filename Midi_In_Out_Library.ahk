@@ -194,8 +194,8 @@ WriteIni()
   {
     global MidiInDevice, MidiOutDevice, version
    
-    IfNotExist, %version%io.ini                                   ; if no .ini 
-      FileAppend,, %version%io.ini                              ; make  .ini with the following entries.
+    IfNotExist, %version%.ini                                   ; if no .ini 
+      FileAppend,, %version%.ini                              ; make  .ini with the following entries.
     IniWrite, %MidiInDevice%, %version%.ini, Settings, MidiInDevice
     IniWrite, %MidiOutDevice%, %version%.ini, Settings, MidiOutDevice
   }
