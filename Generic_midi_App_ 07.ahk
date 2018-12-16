@@ -1,8 +1,7 @@
 /* 
  ;*************************************************
  ;*             GENERIC MIDI APP V.0.7 
- ;*************************************************
-; Last edited 12/16/2018 10:46 PM by genmce
+; Last edited 12/16/2018 10:19 AM by genmce
 
  THIS IS THE PROGRAM TO RUN! 
  EDIT THE OTHER FILES 

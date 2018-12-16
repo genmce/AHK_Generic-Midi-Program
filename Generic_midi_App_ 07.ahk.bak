@@ -6,9 +6,9 @@
 
  THIS IS THE PROGRAM TO RUN! 
  EDIT THE OTHER FILES 
-#Include MidiRules.ahk                    ; this file contains: Rules for manipulating midi input then sending modified midi output.
+ #Include MidiRules.ahk                    ; this file contains: Rules for manipulating midi input then sending modified midi output.
 #Include hotkeyTOmidi_1.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the easy way!
-???????#Include hotkeyTOmidi_2.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the BEST way!
+#Include hotkeyTOmidi_2.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the BEST way!
 
 
 --------------- old readme below--------------
