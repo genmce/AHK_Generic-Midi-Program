@@ -175,6 +175,12 @@ SendCC: ; not sure i actually did anything changing cc's here but it is possible
    
 	;GuiControl,12:, MidiMsOutSend, CCOut:%statusbyte% %chan% %cc% %byte2%
     midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal)
+    ; =============== for display only ; ===============
+    stb := "CC"
+		statusbyte := 176
+		chan = %channel%
+		byte1 = %cc_num%			; set value of the byte1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
+		byte2 = %CCIntVal%	
     gosub, ShowMidiOutMessage
      
      ;MsgBox, 0, ,sendcc triggered , 1
