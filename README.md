@@ -1,6 +1,7 @@
 # AHK_Generic-Midi-Program
 December 15, 2018
 I have come back to work on this project again - I would love help on it.
+License for this version changed - see license
 
 I am fixing here  stay tuned  v.0.7 is not ready yet.
 
