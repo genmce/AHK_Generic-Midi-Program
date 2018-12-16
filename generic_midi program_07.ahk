@@ -134,9 +134,9 @@ gosub, midiMon                     ; see below - a monitor gui - see Midi_In_and
 cc_msg = 73,74 ; ++++++++++++++++ you might want to add other vars that load in auto execute section
 ; varibles below are for keyboard cc 
 channel = 1     ; default channel =1
-cc_num = 7       ; 7 is volume
-volVal = 0     ; Default zero for volume
-volDelta = 1  ; Amount to change volume 
+CC_num = 7       ; 7 is volume
+CCIntlVal = 0     ; Default zero for volume
+CCIntDelta = 1  ; Amount to change volume 
 ; end of vars for hotkey and keyboard cc
 
 /* 

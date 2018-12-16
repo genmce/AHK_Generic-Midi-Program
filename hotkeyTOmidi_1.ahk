@@ -29,7 +29,7 @@ Loop	; loop to detect the state of the hotkey, held down.
 {
 	if !GetKeyState("f7","P") 	; if key is not down, or, if key is released   
 	  break						; break out of the loop and do nothing else.
-    cc_num = 7 				; What CC (data byte1) do you wish to send?
+    CC_num = 7 				; What CC (data byte1) do you wish to send?
     CCIntVal := CCIntVal > 0 ? CCIntVal-1 : 0          ;Subtract 1 from byte 2 until min value of 0 is reached.
    ; stb := "CC"
 	;	statusbyte := 176
