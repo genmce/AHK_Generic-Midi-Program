@@ -134,7 +134,7 @@ gosub, midiMon                     ; see below - a monitor gui - see Midi_In_and
 cc_msg = 73,74 ; ++++++++++++++++ you might want to add other vars that load in auto execute section
 ; varibles below are for keyboard cc 
 channel = 1     ; default channel =1
-ccnum = 7       ; 7 is volume
+cc_num = 7       ; 7 is volume
 volVal = 0     ; Default zero for volume
 volDelta = 1  ; Amount to change volume 
 ; end of vars for hotkey and keyboard cc
@@ -174,7 +174,14 @@ SendCC: ; not sure i actually did anything changing cc's here but it is possible
 
    
 	;GuiControl,12:, MidiMsOutSend, CCOut:%statusbyte% %chan% %cc% %byte2%
-    midiOutShortMsg(h_midiout, statusbyte, cc, byte2)
+    midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal)
+    ; =============== for display only ; ===============
+    stb := "CC"
+		statusbyte := 176
+		chan = %channel%
+		byte1 = %cc_num%			; set value of the byte1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
+		byte2 = %CCIntVal%	
+    gosub, ShowMidiOutMessage
      
      ;MsgBox, 0, ,sendcc triggered , 1
  Return
