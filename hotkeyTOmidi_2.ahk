@@ -25,9 +25,9 @@
 
 ; here are a few examples of adding controller hotkeys.
 
-=::Vol = U   ;    
+=::Vol = U   ;    "=" key is for volume up
 = up::Vol = 
--::Vol = D   ; Mod wheel down 
+-::Vol = D   ;  "-" key is for 
 - up::Vol = 
 
 /* 
@@ -71,7 +71,7 @@ If Vol = D ; decrease - volume down.
     volVal := volVal- volDelta      ; decrease VolVal by VolDelta amount.
     If volVal < 0                   ; check min value reached. 
     VolVal:=0, Vol=""               ; if so set vol to blank and stop doing anything.
-    midiOutShortMsg(h_midiout, (channel+175), CC_num, VolVal) 
+    midiOutShortMsg(h_midiout, (channel+175), CC_unum, VolVal) 
      byte1 = %ccnum%
     byte2 = %volVal%
 	gosub, ShowMidiOutMessage ; change the gui to a function
