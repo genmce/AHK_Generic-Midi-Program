@@ -5,7 +5,8 @@ I have come back to work on this project again - I would love help on it.
 I am fixing here  stay tuned  v.0.7 is not ready yet.
 
 Goals - 
-   - Create new version 0.7
+   - Create new version 0.7 (work in progress)
+   - mouse and joystick have been removed for the moment
    - Clean up the code and comment better
    - Rename Midi Under the hood.ahk to  Midi_In_Out_Library.ahk
    - Document how to make hotkeys to midi with clear examples
