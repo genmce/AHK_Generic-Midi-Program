@@ -31,7 +31,9 @@ Loop	; loop to detect the state of the hotkey, held down.
 	  break						; break out of the loop and do nothing else.
     cc_num = 7 				; What CC (data byte1) do you wish to send?
     CCIntVal := CCIntVal > 0 ? CCIntVal-1 : 0          ;Subtract 1 from byte 2 until min value of 0 is reached.
-    midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) 	; Send midi output (h_midiout=port, (channel+CC statusbyte), CC_num=2lines up, CCIntVal) function located in Midi_In_Out_Library.ahk
+    
+	gosub, SendCC
+	;midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) 	; Send midi output (h_midiout=port, (channel+CC statusbyte), CC_num=2lines up, CCIntVal) function located in Midi_In_Out_Library.ahk
 		; =============== below is only needed MidiMonitor output gui display only
 		stb := "CC"
 		statusbyte := 176

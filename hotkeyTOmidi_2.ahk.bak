@@ -61,7 +61,7 @@ If Vol = U ; increase volume up
     VolVal := VolVal + VolDelta     ;see generic midi program05.ahk where vars defined. increase VolVal by VolDelta amount
     If VolVal > 127                 ; check for max value reached
     VolVal:= 127, Vol:=""           ; Don't go beyond the top
-    midiOutShortMsg(h_midiout, (channel+175), CC_num, VolVal)    ;  ((channel+175) will make the correct statusbyte for cc message on midi chan1) CCnum var defined in autoexec section at top, VolVal is calculated three lines above.  
+    midiOutShortMsg(h_midiout, (channel+175), CCnum, VolVal)    ;  ((channel+175) will make the correct statusbyte for cc message on midi chan1) CCnum var defined in autoexec section at top, VolVal is calculated three lines above.  
     byte1 = %ccnum%
     byte2 = %volVal%
 	gosub, ShowMidiOutMessage       ; Show the midi message on the output monitor - needs revision - something weird here.
@@ -71,7 +71,7 @@ If Vol = D ; decrease - volume down.
     volVal := volVal- volDelta      ; decrease VolVal by VolDelta amount.
     If volVal < 0                   ; check min value reached. 
     VolVal:=0, Vol=""               ; if so set vol to blank and stop doing anything.
-    midiOutShortMsg(h_midiout, (channel+175), CC_num, VolVal) 
+    midiOutShortMsg(h_midiout, (channel+175), CCnum, VolVal) 
      byte1 = %ccnum%
     byte2 = %volVal%
 	gosub, ShowMidiOutMessage ; change the gui to a function

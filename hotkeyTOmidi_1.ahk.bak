@@ -2,9 +2,8 @@
 /* 
 ; Last edited 12/15/2018 4:38 PM by genmce
 adding comments for clarity
-speeding up timer for faster moves
- need to revise to use sendcc method instead of midioutshort message for clarity
-
+speeding up timer for faster move
+; ===============need to revise to use sendcc method instead of midioutshort message for clarity
 
 	1st method for generating CC's from keystroke.
 
@@ -17,7 +16,6 @@ speeding up timer for faster moves
 	The example below will generate volume cc#7,  
 	CC# 7 will decrease when F7 key is pressed  unitl 0 is reached
 	CC#7 will increase when F8 is pressed until 127 is reached
-
 
 */
 
