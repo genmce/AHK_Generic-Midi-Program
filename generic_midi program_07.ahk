@@ -179,7 +179,7 @@ SendCC: ; not sure i actually did anything changing cc's here but it is possible
     stb := "CC"
 		statusbyte := 176
 		chan = %channel%
-		byte1 = %cc_num%			; set value of the byte1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
+		byte1 = %CC_num%			; set value of the byte1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
 		byte2 = %CCIntVal%	
     gosub, ShowMidiOutMessage
      
