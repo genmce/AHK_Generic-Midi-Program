@@ -202,7 +202,7 @@ Return
 ;*************************************************
 #Include MidiRules.ahk                    ; this file contains: Rules for manipulating midi input then sending modified midi output.
 #Include hotkeyTOmidi_1.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the easy way!
-#Include hotkeyTOmidi_2.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the BEST way!
+; removed until fixed #Include hotkeyTOmidi_2.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the BEST way!
 ;#include joystuff.ahk                       ; this file contains: joystick stuff.   
 ;#include xy_mouse.ahk
 

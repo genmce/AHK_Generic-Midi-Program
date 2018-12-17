@@ -9,18 +9,7 @@
 #Include hotkeyTOmidi_1.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the easy way!
 #Include hotkeyTOmidi_2.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the BEST way!
 
-
 --------------- old readme below--------------
-
- 
- 
- I fear that adding so many different examples my make this more difficult to use.
- I may have to pull different parts, MidiRules into an include file the same goes for the hotkeys midi generation...
- Ah well...
- 
- ****************************************************************
- 
- ****************************************************************
  
 Generic Midi Program
   Basic structural framework for a midi program in ahk.
@@ -103,40 +92,36 @@ v. 0.6
 ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! no edit here 
  
 #Persistent
-#SingleInstance
+#SingleInstance                                ; Only run one instance
 SendMode Input                              ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%       ; Ensures a consistent starting directory.
-
-if A_OSVersion in WIN_NT4,WIN_95,WIN_98,WIN_ME  ; if not xp or greater, quit program
+if A_OSVersion in WIN_NT4,WIN_95,WIN_98,WIN_ME  ; If not Windows XP or greater, quit program
 {   
    MsgBox This script requires Windows 2000/XP or later.
     ExitApp
 }
 
 ;*************************************************
-version = Generic_Midi_App_0.7          
+version = Generic_Midi_App_0.7          ; Version name and number
 ;*************************************************
 
-readini()                                    ; load values from the ini file, via the readini function - see Midi_under_the_hood.ahk file
-gosub, MidiPortRefresh          ; used to refresh the input and output port lists - see Midi_under_the_hood.ahk file
-port_test(numports,numports2)   ; test the ports - check for valid ports? - see Midi_under_the_hood.ahk file
-gosub, midiin_go                    ; opens the midi input port listening routine see Midi_under_the_hood.ahk file
-gosub, midiout                       ; opens the midi out port see Midi_under_the_hood.ahk file  
-gosub, midiMon                     ; see below - a monitor gui - see Midi_In_and_GuiMonitor.ahk
-
-;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! end edit here 
+readini()                                    ; Load values from the ini file, via the readini function - see Midi_In_Out_Lib.ahk file
+gosub, MidiPortRefresh          ; used to refresh the input and output port lists - see Midi_In_Out_Lib.ahk file
+port_test(numports,numports2)   ; test the ports - check for valid ports? - see Midi_In_Out_Lib.ahk file
+gosub, midiin_go                    ; opens the midi input port listening routine see Midi_In_Out_Lib.ahk file
+gosub, midiout                       ; opens the midi out port see Midi_In_Out_Lib.ahk file 
+gosub, midiMon                     ; see below - a monitor gui - see Midi_In_Out_Lib.ahk file
 
 ;*************************************************
 ;*         VARIBLES TO SET @ STARTUP
 ;*************************************************
 
-cc_msg = 73,74 ; ++++++++++++++++ you might want to add other vars that load in auto execute section
+cc_msg = 73,74 ; +++++++++ you might want to add other vars that load in auto execute section IS THIS USED?
 ; varibles below are for keyboard cc 
-channel = 1     ; default channel =1
-CC_num = 7       ; 7 is volume
-CCIntlVal = 0     ; Default zero for volume
-CCIntDelta = 1  ; Amount to change volume 
-; end of vars for hotkey and keyboard cc
+channel = 1          ; default channel =1
+CC_num = 7         ; CC 
+CCIntVal = 0        ; Default zero for  CC  (data byte 2)
+CCIntDelta = 1    ; Amount to change CC (data byte 2)
 
 /* 
   yourVar = 0
@@ -144,13 +129,10 @@ CCIntDelta = 1  ; Amount to change volume
   yourVarCCnum = 1 ; modwheel
 */
 
-settimer, KeyboardCCs, 70 ; timer (loop of code) to run the KeyboardCCs at the 70 interval
-
-; gosub, go_xymouse   ; loads the xy mouse  - only use if needed.... maybe make a switch for this?
-; maybe an entry in the .ini file?
-
-return ; !!!! no edit here,  this line to end the auto exec section.
-
+settimer, KeyboardCCs, 50 ; KeyBoardCCs is located in HotKeyTOMidi2.ahk > timer (loop of code) to run the KeyboardCCs at the 70ms interval
+ ; gosub, go_xymouse   ; loads the xy mouse  - only use if needed.... maybe make a switch for this?
+ ; maybe an entry in the .ini file?
+return ;  Ends autoexec section
 ;*************************************************
 ;*          END OF AUTOEXEC SECTION
 ;*************************************************
@@ -158,6 +140,20 @@ return ; !!!! no edit here,  this line to end the auto exec section.
 ;*************************************************
 ;*          SEND MIDI OUTPUT BASED ON TYPE  
 ;*************************************************
+
+SendCC: ; Send the CC midi message and show it one the midi display
+
+	;GuiControl,12:, MidiMsOutSend, CCOut:%statusbyte% %chan% %cc% %byte2% (THIS WAS JUST FOR TESTING DELETE WHEN FINISHED)
+    midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) ; SEND OUT THE MESSAGE > function located in Midi_In_Out_Lib.ahk
+    ; =============== set vars for display only ;  get these to be the same vars as midi send messages
+    stb := "CC"
+    statusbyte := 176
+    chan = %channel%
+    byte1 = %CC_num%			; set value of the byte1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
+    byte2 = %CCIntVal%	
+    gosub, ShowMidiOutMessage ; Display midi out message on gui in IO_lib
+    ;MsgBox, 0, ,sendcc triggered , 1 ; for testing purposes only
+ Return
 
 SendNote:   ;(h_midiout,Note) ; send out note messages ; this should probably be a funciton but... eh.
   ;{
@@ -169,32 +165,16 @@ SendNote:   ;(h_midiout,Note) ; send out note messages ; this should probably be
      gosub, ShowMidiOutMessage
 Return
   
-SendCC: ; not sure i actually did anything changing cc's here but it is possible.
 
-   
-	;GuiControl,12:, MidiMsOutSend, CCOut:%statusbyte% %chan% %cc% %byte2%
-    midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal)
-    ; =============== for display only ; ===============
-    stb := "CC"
-		statusbyte := 176
-		chan = %channel%
-		byte1 = %CC_num%			; set value of the byte1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
-		byte2 = %CCIntVal%	
-    gosub, ShowMidiOutMessage
-     
-     ;MsgBox, 0, ,sendcc triggered , 1
- Return
  
 SendPC:
     gosub, ShowMidiOutMessage
 	;GuiControl,12:, MidiMsOutSend, ProgChOut:%statusbyte% %chan% %byte1% %byte2%
     midiOutShortMsg(h_midiout, statusbyte, pc, byte2)
  /* 
-  COULD BE TRANSLATED TO SOME OTHER MIDI MESSAGE IF NEEDED.
+   Method could be developed for other midi messages like after touch...etc.
  */
 Return
-
-
 
 ;*************************************************
 ;*              INCLUDE FILES -
@@ -202,7 +182,7 @@ Return
 ;*************************************************
 #Include MidiRules.ahk                    ; this file contains: Rules for manipulating midi input then sending modified midi output.
 #Include hotkeyTOmidi_1.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the easy way!
-; removed until fixed #Include hotkeyTOmidi_2.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the BEST way!
+#Include hotkeyTOmidi_2.ahk         ; this file contains: examples of HOTKEY generated midi messages to be output - the BEST way!
 ;#include joystuff.ahk                       ; this file contains: joystick stuff.   
 ;#include xy_mouse.ahk
 

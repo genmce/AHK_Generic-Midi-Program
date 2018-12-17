@@ -8,8 +8,8 @@
   What is going on here.
   A settimer (loop) is running every 70millisecond (timing is approximate as per the ahk manual on settimmer) called KeyboardCCs. 
   The loop below in the keyboardccs label detects if the var Vol is set to U, D or blank.
-  The value of the var Vol is set by the hotkeys F11 and F12.
-  The KeyboardCCs timer will do Send midi messages or not depending on the state of the Vol varible.
+  The value of the var CC1 is set by the hotkeys  "- "and "=".
+  The KeyboardCCs timer will do Send midi messages or not depending on the state of the CC1 varible.
   VolVal is the value of the volume to send out.
   VolDelta is the amount of change of the VolVar each time the timer does 1 loop.
   The VolDelta var is set near the beginning of the generic_midi_program.
@@ -25,9 +25,9 @@
 
 ; here are a few examples of adding controller hotkeys.
 
-=::CC1 = U   ;    "=" key is for volume up
-= up::CC1 = 
--::CC1 = D   ;  "-" key is for 
+=::CC1 = U     ; Detects if key  "="  is pressed, if yes CC1 var is set to U for volume up  se below
+= up::CC1 =   ; detects if  key is released 
+-::CC1 = D      ;  
 - up::CC1 = 
 
 /* 
@@ -54,26 +54,29 @@
 
 KeyboardCCs:
 
+;*****************************************************************
+;   THIS SECTION CONVERTS KEY PRESS TO MIDI CC MSG
+;*****************************************************************
+
 ; =============== this is a section for volume control
 
 If CC1 = U ; increase volume up
   {
-    CC_num = 7 				; What CC (data byte1) do you wish to send?
-    ;CCIntVal := CCIntVal > 0 ? CCIntVal-1 : 0 
-    CCIntVal := CCIntlVal + CCIntDelta     ;see generic midi program05.ahk where vars defined. increase VolVal by VolDelta amount
+    ;CC_num = 7 				; What CC (data byte1) do you wish to send?
+    CCIntVal := CCIntVal + CCIntDelta     ;see generic midi program05.ahk where vars defined. increase VolVal by VolDelta amount
     If CCIntVal > 127                 ; check for max value reached
-   CCIntVal:= 127, CC1:=""           ; Don't go beyond the top
+      CCIntVal:= 127, CC1:=""           ; Don't go beyond the top
     gosub, SendCC
     ;midiOutShortMsg(h_midiout, (channel+175), CC_num, VolVal)    ;  ((channel+175) will make the correct statusbyte for cc message on midi chan1) CCnum var defined in autoexec section at top, VolVal is calculated three lines above.  
-    ;byte1 = %CC_num%
-    ;byte2 = %volVal%
+   ;byte1 = %CC_num%
+   ;byte2 = %volVal%
 	;gosub, ShowMidiOutMessage       ; Show the midi message on the output monitor - needs revision - something weird here.
   }
 If CC1= D ; decrease - volume down.
   {
     CC_num = 7 				; What CC (data byte1) do you wish to send?
     ;CCIntVal := CCIntVal > 0 ? CCIntVal-1 : 0 
-    CCIntVal := CCIntlVal - CCIntDelta     ; decrease VolVal by VolDelta amount.
+    CCIntVal := CCIntVal - CCIntDelta     ; decrease VolVal by VolDelta amount.
     If CCIntVal < 0                   ; check min value reached. 
   CCIntVal:=0, CC1 =""               ; if so set vol to blank and stop doing anything.
     gosub, SendCC
