@@ -62,27 +62,27 @@ KeyboardCCs:
 
 If CC1 = U ; increase volume up
   {
-    ;CC_num = 7 				; What CC (data byte1) do you wish to send?
+    ;CC_num = 7 				; What CC (data data1) do you wish to send?
     CCIntVal := CCIntVal + CCIntDelta     ;see generic midi program05.ahk where vars defined. increase VolVal by VolDelta amount
     If CCIntVal > 127                 ; check for max value reached
       CCIntVal:= 127, CC1:=""           ; Don't go beyond the top
     gosub, SendCC
     ;midiOutShortMsg(h_midiout, (channel+175), CC_num, VolVal)    ;  ((channel+175) will make the correct statusbyte for cc message on midi chan1) CCnum var defined in autoexec section at top, VolVal is calculated three lines above.  
-   ;byte1 = %CC_num%
-   ;byte2 = %volVal%
+   ;data1 = %CC_num%
+   ;data2 = %volVal%
 	;gosub, ShowMidiOutMessage       ; Show the midi message on the output monitor - needs revision - something weird here.
   }
 If CC1= D ; decrease - volume down.
   {
-    CC_num = 7 				; What CC (data byte1) do you wish to send?
+    CC_num = 7 				; What CC (data data1) do you wish to send?
     ;CCIntVal := CCIntVal > 0 ? CCIntVal-1 : 0 
     CCIntVal := CCIntVal - CCIntDelta     ; decrease VolVal by VolDelta amount.
     If CCIntVal < 0                   ; check min value reached. 
   CCIntVal:=0, CC1 =""               ; if so set vol to blank and stop doing anything.
     gosub, SendCC
     ;midiOutShortMsg(h_midiout, (channel+175), CC_num, VolVal) 
-     ;byte1 = %CC_num%
-    ;byte2 = %volVal%
+     ;data1 = %CC_num%
+    ;data2 = %volVal%
 	;gosub, ShowMidiOutMessage ; change the gui to a function
   }
 if CC1 = ; set the var to blank
