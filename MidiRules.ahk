@@ -25,6 +25,12 @@
         }
   */
 
+/* 
+  WHAT DO YOU REALLY WANT TO DO?
+  CONVERT MIDI TO KEYSTROKE? OR
+  MODIFY MIDI INPUT AND SEND IT BACK OUT?
+*/
+
 MidiRules: ; write your own rules in here, look for : ++++++ for where you might want to add
            ; stay away from !!!!!!!!!!
 
