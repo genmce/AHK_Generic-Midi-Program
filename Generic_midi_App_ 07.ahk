@@ -89,7 +89,7 @@ CCIntDelta = 1    ; Amount to change CC (data byte 2)
  TODO Make .ini entry for this label - for use with hotkey2midi_2 method only to write it might need a gui too????
 */
 settimer, KeyboardCCs, 50 ; KeyBoardCCs is located in HotKeyTOMidi2.ahk > timer (loop of code) to run the KeyboardCCs at the 70ms interval
-
+; settimer, MidiRules, 70 ; does not seem to work  not needed called during onmessage detect
 ;*****************************************************************
 ;   XYMOUSE AND JOYSTICK ROUTINES - NOT USED AT THIS TIME
 ;*****************************************************************

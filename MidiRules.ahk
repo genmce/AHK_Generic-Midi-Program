@@ -29,8 +29,12 @@ MidiRules: ; write your own rules in here, look for : ++++++ for where you might
            ; stay away from !!!!!!!!!!
 
   ; =============== Is midi input a Note On or Note off message?  =============== 
+  if  (stb = "NoteOn" And data1  = "36") ; Example - midi note - trigger msg box - could trigger keycommands  
+      {
+          MsgBox, 0, , Note %data1%, 1
+      }
   
-  if statusbyte between 128 and 159 ; see range of values for notemsg var defined in autoexec section. "in" used because ranges of note on and note off
+  If statusbyte between 128 and 159 ; see range of values for notemsg var defined in autoexec section. "in" used because ranges of note on and note off
 	{ ; beginning of note block
       
       if statusbyte between 144 and 159 ; detect if note message is "note on" 
@@ -39,6 +43,13 @@ MidiRules: ; write your own rules in here, look for : ++++++ for where you might
         ;GuiControl,14:, ChanIn,%chan%
         ;GuiControl,14:, data1In,%data1%
         ;GuiControl,14:, data2In,%data2% ; display noteOn message in gui
+       ifequal, data1, 37  ;  if the note number coming in is note # 20
+        {
+          MsgBox, 64, Note on Note = %data1%, , 2
+           
+          ;data1 := (data1 +1) ; transpose that note up 1 note number  
+          ;gosub, SendNote ; send the note out.
+        }
       
 	  if statusbyte between 128 and 143 ; detect if note message is "note off"
         ;gosub, ShowMidiInMessage
@@ -60,11 +71,7 @@ MidiRules: ; write your own rules in here, look for : ++++++ for where you might
   */
   ; ++++++++++++++++++++++++++++++++ examples of note rules ++++++++++ feel free to add more.
      
-     ifequal, data1, 20 ; if the note number coming in is note # 20
-        {
-          data1 := (data1 +1) ; transpose that note up 1 note number  
-          gosub, SendNote ; send the note out.
-        }
+    
       
       ifequal, data1, 30 ; if the note number coming in is note # 30
         {

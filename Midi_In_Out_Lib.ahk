@@ -73,6 +73,7 @@ MidiMsgDetect(hInput, midiMsg, wMsg) ; Midi input section in calls this function
 	gosub, ShowMidiInMessage ; show updated midi input message on midi monitor gui.
 	gosub, MidiRules ; run the label in file MidiRules.ahk Edit that file.
   } ; end of MidiMsgDetect funciton
+
 Return
 
 ;*************************************************
