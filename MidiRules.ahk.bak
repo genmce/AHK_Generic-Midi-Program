@@ -15,12 +15,9 @@
       Keep them after the statusbyte has been determined.
       Examples for each type of rule will be shown. 
       The example below is for note type message.
-     
-     Remember for NoteOn/Off data1 = note number, data2 = velocity of that note.
+      
+      Remember data1 for a noteon/off is the note number, data2 is the velocity of that note.
       example
-      
-      
-      
       ifequal, data1, 20 ; if the note number coming in is note # 20
         {
           data1 := (do something in here) ; could be do something to the velocity(data2)
@@ -34,14 +31,11 @@
   MODIFY MIDI INPUT AND SEND IT BACK OUT?
 */
 
-MidiRules: ; This label is where midi input is modified or converted to  keypress.
+MidiRules: ; write your own rules in here, look for : ++++++ for where you might want to add
+           ; stay away from !!!!!!!!!!
 
-; =============== Is midi input a Note On or Note off message?  =============== 
-  
-  ;*****************************************************************
-  ;     EXAMPLE OF MIDI TO KEYPRESS
-  ;*****************************************************************
-    if  (stb = "NoteOn" And data1  = "36") ; Example - midi note - trigger msg box - could trigger keycommands  
+  ; =============== Is midi input a Note On or Note off message?  =============== 
+  if  (stb = "NoteOn" And data1  = "36") ; Example - midi note - trigger msg box - could trigger keycommands  
       {
           MsgBox, 0, , Note %data1%, 1
       }
