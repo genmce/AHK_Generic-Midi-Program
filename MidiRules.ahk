@@ -1,24 +1,38 @@
-; Last edited 12/17/2018 1:02 PM by genmce
-
-;NEED TO CHANGE VAR NAMES TO DATA1 AND  DATA2
-
+; Last edited 12/18/2018 3:03 PM by genmce
 ;*************************************************
-;*          RULES - MIDI FILTERS
+;*          RULES - MIDI FILTERS - 
+;       MIDI INPUT TO KEY PRESS
 ;*************************************************
-
 /* 
-      The MidiRules section is for modifying midi input from some other source.
-        *See hotkeys below if you wish to generate midi messages from hotkeys.
+      This section will deal with transforming midi; NoteOns, NoteOffs, Continuous Controllers and Program Change messages
+      You can 
+        - Transform the midi input > computer keypress(s) like a macro.  
+        - Transform the midi input > to some other type of midi output.
+      Both are possible in the same script.
+      This script does NOT, currently, pass the original midi messsage out.
       
-      Write your own MidiRules and put them in this section.
-      Keep rules together under proper section, notes, cc, program change etc.
+      There are a few ways to handle transformations
+      1. Set up a filter to detect correct type and data1 val - then run commands or 
+      2. Set up filter after type filter (NoteOn, NoteOff, CC or PC) under that section below -      
+      (Keep rules together under proper section, notes, cc, program change etc.
       Keep them after the statusbyte has been determined.
       Examples for each type of rule will be shown. 
-      The example below is for note type message.
+      The example below is for note type message.)
      
-     Remember for NoteOn/Off data1 = note number, data2 = velocity of that note.
-      example
+     
+Statusbyte between 128 and 159 ; see range of values for notemsg var defined in autoexec section. "in" used because ranges of note on and note off
+	{ ; beginning of note block
       
+ 
+ statusbyte between 128 and 143 ARE NOTE OFF'S
+ statusbyte between 144 and 159 ARE NOTE ON'S 
+ statusbyte between 176 and 191 ARE CONTINUOS CONTROLLERS
+ statusbyte between 192 and 208  ARE PROGRAM CHANGE for data1 values
+
+     Remember: 
+     NoteOn/Off data1 = note number, data2 = velocity of that note.
+     CC - data1 = cc #, data2 = cc value 
+     Program Change - data1 = pc #, data2 - ignored
       
       
       ifequal, data1, 20 ; if the note number coming in is note # 20
@@ -27,43 +41,60 @@
           gosub, SendNote ; send the note out.
         }
   */
-
 /* 
   WHAT DO YOU REALLY WANT TO DO?
-  CONVERT MIDI TO KEYSTROKE? OR
+  CONVERT MIDI TO KEYSTROKE?  Line 45 this file 
   MODIFY MIDI INPUT AND SEND IT BACK OUT?
 */
 
+;*****************************************************************
+;   Midi input is detected in Midi_In_Out_Lib  - 
+;   it automatically runs the MidiRules label
+;*****************************************************************
+
 MidiRules: ; This label is where midi input is modified or converted to  keypress.
 
-; =============== Is midi input a Note On or Note off message?  =============== 
-  
   ;*****************************************************************
-  ;     EXAMPLE OF MIDI TO KEYPRESS
+  ;     EXAMPLE OF MIDI TO KEYPRESS - 
   ;*****************************************************************
-    if  (stb = "NoteOn" And data1  = "36") ; Example - midi note - trigger msg box - could trigger keycommands  
+    if  (stb = "NoteOn" And data1  = "36")  ; Example - if  msg is midi noteOn AND note# 36 - trigger msg box - could trigger keycommands  
       {
-          MsgBox, 0, , Note %data1%, 1
+          MsgBox, 0, , Note %data1%, 1          ; show the msgbox with the note# for 1 sec
+          
+          ;UNCOMMENT LINE BELOW TO SEND A KEYPRESS WHEN NOTE 36 IS RECEIVED
+          ;send , {NumLock} ; send a keypress when note number 20 is received.
       }
   
-  If statusbyte between 128 and 159 ; see range of values for notemsg var defined in autoexec section. "in" used because ranges of note on and note off
-	{ ; beginning of note block
+  
+  ;*****************************************************************
+  ; Compare statusbyte of recieved midi msg to determine type of 
+  ; You could write your methods under which ever type of  midi you want to convert
+  
+  ; RETHINK HOW THESE ARE ORGANIZED AND MAYBE TO IT BY LINE
+  ;*****************************************************************
+  
+  ; =============== Is midi input a Note On or Note off message?  =============== 
+ ; If statusbyte between 128 and 159 ; see range of values for notemsg var defined in autoexec section. "in" used because ranges of note on and note off
+;	{ ; beginning of note block
       
-      if statusbyte between 144 and 159 ; detect if note message is "note on" 
-        ;gosub, ShowMidiInMessage
-		;GuiControl,14:, StatusByteIn,%statusbyte%
-        ;GuiControl,14:, ChanIn,%chan%
-        ;GuiControl,14:, data1In,%data1%
-        ;GuiControl,14:, data2In,%data2% ; display noteOn message in gui
+if statusbyte between 144 and 159 ; detect if note message is "note on" 
+       ;*****************************************************************
+       ;    PUT ALL NOTE ON TRANSFORMATIONS HERE
+       ;*****************************************************************
        ifequal, data1, 37  ;  if the note number coming in is note # 20
         {
           MsgBox, 64, Note on Note = %data1%, , 2
-           
           ;data1 := (data1 +1) ; transpose that note up 1 note number  
           ;gosub, SendNote ; send the note out.
         }
+
+        ; =============== END OF NOTE ON MESSAGES ; ===============
       
-	  if statusbyte between 128 and 143 ; detect if note message is "note off"
+if statusbyte between 128 and 143 ; detect if note message is "note off"
+    ;*****************************************************************
+    ;   PUT ALL NOTE OFF TRANSFORMATIONS HERE
+    ;*****************************************************************
+    
         ;gosub, ShowMidiInMessage
 		;GuiControl,12:, MidiMsOut, noteOff:%statusbyte% %chan% %data1% %data2%  ; display note off in gui
  
@@ -84,6 +115,9 @@ MidiRules: ; This label is where midi input is modified or converted to  keypres
   ; ++++++++++++++++++++++++++++++++ examples of note rules ++++++++++ feel free to add more.
      
     
+      ;*****************************************************************
+      ; ANOTHER MIDI TO KEYPRESS EXAMPLE
+      ;*****************************************************************
       
       ifequal, data1, 30 ; if the note number coming in is note # 30
         {
@@ -115,12 +149,16 @@ MidiRules: ; This label is where midi input is modified or converted to  keypres
 
 
 ; =============== IS INCOMING MIDI MESSAGE A CC?  ---- 
+;*****************************************************************
+;   IS INCOMING MSG IS A CC?
+;*****************************************************************
 
   if statusbyte between 176 and 191 ; check status byte for cc 176-191 is the range for CC messages
-    ;gosub, sendcc
-    
-    {
-    ; ++++++++++++++++++++++++++++++++ examples of CC rules ++++++++++ feel free to add more.  
+      {
+    ;*****************************************************************
+    ;   PUT ALL CC TRANSFORMATIONS HERE 
+    ;***************************************************************** 
+    ;++++++++++++++++++++++++++++++++ examples of CC rules ++++++++++ feel free to add more.  
         if data1 in %cc_msg%
           {
             cc := (data1 + 3) ; Will change all cc#'s up 3 for a different controller number
@@ -140,9 +178,15 @@ MidiRules: ; This label is where midi input is modified or converted to  keypres
     ; ++++++++++++++++++++++++++++++++ examples of cc rules ends ++++++++++++ 
     }
   
-  ; Is midi input a Program Change?
+  ;*****************************************************************
+  ; IS INCOMING MSG A PROGRAM CHANGE MESSAGE?
+  ;*****************************************************************
   if statusbyte between 192 and 208  ; check if message is in range of program change messages for data1 values. ; !!!!!!!!!!!! no edit
     {
+      ;*****************************************************************
+      ; PUT ALL PC TRANSFORMATIONS HERE
+      ;*****************************************************************
+      
     ; ++++++++++++++++++++++++++++++++ examples of program change rules ++++++++++  
       ; Sorry I have not created anything for here nor for pitchbends....
       
