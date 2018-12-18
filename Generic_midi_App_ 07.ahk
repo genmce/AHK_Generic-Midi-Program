@@ -54,7 +54,6 @@ if A_OSVersion in WIN_NT4,WIN_95,WIN_98,WIN_ME  ; If not Windows XP or greater, 
    MsgBox This script requires Windows 2000/XP or later.
     ExitApp
 }
-
 ;*************************************************
 version = Generic_Midi_App_0.7          ; Version name and number
 ;*************************************************
