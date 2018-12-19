@@ -68,10 +68,13 @@ MidiMsgDetect(hInput, midiMsg, wMsg) ; Midi input section in calls this function
 		stb := "NoteOn"                            ; Set gui var
 	if statusbyte between 128 and 143  ; Is message a Note Off?
         stb := "NoteOff"                           ; set gui to NoteOff
-	if statusbyte between 224 and 239  ; Is message a Pitch Bend
+	if statusbyte between 192 and 208
+        stb := "PC"
+    if statusbyte between 224 and 239  ; Is message a Pitch Bend
 		stb := "PitchB"                              ; Set gui to pb
-	gosub, ShowMidiInMessage ; show updated midi input message on midi monitor gui.
-	gosub, MidiRules ; run the label in file MidiRules.ahk Edit that file.
+	;gosub, ShowMidiInMessage ; show updated midi input message on midi monitor gui.
+	MidiInDisplay(stb, statusbyte, chan, data1, data2)
+    gosub, MidiRules ; run the label in file MidiRules.ahk Edit that file.
   } ; end of MidiMsgDetect funciton
 
 Return
@@ -80,6 +83,30 @@ Return
 ;* 		SHOW MIDI INPUT ON GUI MONITOR
 ;*************************************************
 
+MidiInDisplay(stb, statusbyte, chan, data1, data2) ; ; update the midimonitor gui
+{
+Gui,14:default
+Gui,14:ListView, In1 ; see the first listview midi in monitor
+	LV_Add("",stb,statusbyte,chan,data1,data2)
+	LV_ModifyCol(1,"center")
+	LV_ModifyCol(2,"center")
+	LV_ModifyCol(3,"center")
+	LV_ModifyCol(4,"center")
+	LV_ModifyCol(5,"center")
+	If (LV_GetCount() > 10)
+		{
+			LV_Delete(1)
+		}
+}
+return
+
+
+
+
+
+
+; Old - working method revising to a function above 
+/*  
 ShowMidiInMessage: ; update the midimonitor gui
 Gui,14:default
 Gui,14:ListView, In1 ; see the first listview midi in monitor
@@ -94,13 +121,14 @@ Gui,14:ListView, In1 ; see the first listview midi in monitor
 			LV_Delete(1)
 		}
 return
-
+*/
 ;*************************************************
 ;* 		SHOW MIDI OUTPUT ON GUI MONITOR
 ;*************************************************
 
-ShowMidiOutMessage: ; update the midimonitor gui 
-
+;ShowMidiOutMessage: ; update the midimonitor gui 
+MidiOutDisplay(stb, statusbyte, chan, data1, data2) ; ; update the midimonitor gui
+{
 Gui,14:default
 Gui,14:ListView, Out1 ; see the second listview midi out monitor
 	LV_Add("",stb,statusbyte,chan,data1,data2)
@@ -113,6 +141,7 @@ Gui,14:ListView, Out1 ; see the second listview midi out monitor
 		{
 			LV_Delete(1)
 		}
+}
 return
 
 ;*************************************************

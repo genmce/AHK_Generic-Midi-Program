@@ -4,43 +4,43 @@
 ;       MIDI INPUT TO KEY PRESS
 ;*************************************************
 /* 
-      This section will deal with transforming midi; NoteOns, NoteOffs, Continuous Controllers and Program Change messages
-      You can 
-        - Transform the midi input > computer keypress(s) like a macro.  
-        - Transform the midi input > to some other type of midi output.
-      Both are possible in the same script.
-      This script does NOT, currently, pass the original midi messsage out.
-      
-      There are a few ways to handle transformations
-      1. Set up a filter to detect correct type and data1 val - then run commands or 
-      2. Set up filter after type filter (NoteOn, NoteOff, CC or PC) under that section below -      
-      (Keep rules together under proper section, notes, cc, program change etc.
-      Keep them after the statusbyte has been determined.
-      Examples for each type of rule will be shown. 
-      The example below is for note type message.)
-     
-     
-Statusbyte between 128 and 159 ; see range of values for notemsg var defined in autoexec section. "in" used because ranges of note on and note off
-	{ ; beginning of note block
-      
- 
- statusbyte between 128 and 143 ARE NOTE OFF'S
- statusbyte between 144 and 159 ARE NOTE ON'S 
- statusbyte between 176 and 191 ARE CONTINUOS CONTROLLERS
- statusbyte between 192 and 208  ARE PROGRAM CHANGE for data1 values
+This section will deal with transforming midi; NoteOns, NoteOffs, Continuous Controllers and Program Change messages
+You can 
+- Transform the midi input > computer keypress(s) like a macro.  
+- Transform the midi input > to some other type of midi output.
+Both are possible in the same script.
+This script does NOT, currently, pass the original midi messsage out.
 
-     Remember: 
-     NoteOn/Off data1 = note number, data2 = velocity of that note.
-     CC - data1 = cc #, data2 = cc value 
-     Program Change - data1 = pc #, data2 - ignored
-      
-      
-      ifequal, data1, 20 ; if the note number coming in is note # 20
-        {
-          data1 := (do something in here) ; could be do something to the velocity(data2)
-          gosub, SendNote ; send the note out.
-        }
-  */
+There are a few ways to handle transformations
+1. Set up a filter to detect correct type and data1 val - then run commands or 
+2. Set up filter after type filter (NoteOn, NoteOff, CC or PC) under that section below -      
+(Keep rules together under proper section, notes, cc, program change etc.
+Keep them after the statusbyte has been determined.
+Examples for each type of rule will be shown. 
+The example below is for note type message.)
+
+
+Statusbyte between 128 and 159 ; see range of values for notemsg var defined in autoexec section. "in" used because ranges of note on and note off
+{ ; beginning of note block
+
+
+statusbyte between 128 and 143 ARE NOTE OFF'S
+statusbyte between 144 and 159 ARE NOTE ON'S 
+statusbyte between 176 and 191 ARE CONTINUOS CONTROLLERS
+statusbyte between 192 and 208  ARE PROGRAM CHANGE for data1 values
+
+Remember: 
+NoteOn/Off data1 = note number, data2 = velocity of that note.
+CC - data1 = cc #, data2 = cc value 
+Program Change - data1 = pc #, data2 - ignored
+
+
+ifequal, data1, 20 ; if the note number coming in is note # 20
+{
+  data1 := (do something in here) ; could be do something to the velocity(data2)
+  gosub, SendNote ; send the note out.
+}
+*/
 /* 
   WHAT DO YOU REALLY WANT TO DO?
   CONVERT MIDI TO KEYSTROKE?  Line 45 this file 
@@ -54,32 +54,32 @@ Statusbyte between 128 and 159 ; see range of values for notemsg var defined in 
 
 MidiRules: ; This label is where midi input is modified or converted to  keypress.
 
-  ;*****************************************************************
-  ;     EXAMPLE OF MIDI TO KEYPRESS - 
-  ;*****************************************************************
-    if  (stb = "NoteOn" And data1  = "36")  ; Example - if  msg is midi noteOn AND note# 36 - trigger msg box - could trigger keycommands  
-      {
-          MsgBox, 0, , Note %data1%, 1          ; show the msgbox with the note# for 1 sec
-          
-          ;UNCOMMENT LINE BELOW TO SEND A KEYPRESS WHEN NOTE 36 IS RECEIVED
-          ;send , {NumLock} ; send a keypress when note number 20 is received.
-      }
-  
-  
-  ;*****************************************************************
-  ; Compare statusbyte of recieved midi msg to determine type of 
-  ; You could write your methods under which ever type of  midi you want to convert
-  
-  ; RETHINK HOW THESE ARE ORGANIZED AND MAYBE TO IT BY LINE
-  ;*****************************************************************
-  
-  ; =============== Is midi input a Note On or Note off message?  =============== 
+;*****************************************************************
+;     EXAMPLE OF MIDI TO KEYPRESS - 
+;*****************************************************************
+if  (stb = "NoteOn" And data1  = "36")  ; Example - if  msg is midi noteOn AND note# 36 - trigger msg box - could trigger keycommands  
+  {
+  MsgBox, 0, , Note %data1%, 1          ; show the msgbox with the note# for 1 sec
+
+  ;UNCOMMENT LINE BELOW TO SEND A KEYPRESS WHEN NOTE 36 IS RECEIVED
+  ;send , {NumLock} ; send a keypress when note number 20 is received.
+  }
+
+
+;*****************************************************************
+; Compare statusbyte of recieved midi msg to determine type of 
+; You could write your methods under which ever type of  midi you want to convert
+
+; RETHINK HOW THESE ARE ORGANIZED AND MAYBE TO IT BY LINE
+;*****************************************************************
+
+; =============== Is midi input a Note On or Note off message?  =============== 
  ; If statusbyte between 128 and 159 ; see range of values for notemsg var defined in autoexec section. "in" used because ranges of note on and note off
 ;	{ ; beginning of note block
-      
+ 
 if statusbyte between 144 and 159 ; detect if note message is "note on" 
        ;*****************************************************************
-       ;    PUT ALL NOTE ON TRANSFORMATIONS HERE
+       ;    PUT ALL "NOTE ON" TRANSFORMATIONS HERE
        ;*****************************************************************
        ifequal, data1, 37  ;  if the note number coming in is note # 20
         {
@@ -145,7 +145,7 @@ if statusbyte between 128 and 143 ; detect if note message is "note off"
             ;msgbox, ,transpose down 5, note on %data1% message, 1 ; for testing only, uncomment if you need it.
         }	
     ; ++++++++++++++++++++++++++++++++ End of examples of note rules  ++++++++++ 
-    } 
+    ;} 
 
 
 ; =============== IS INCOMING MIDI MESSAGE A CC?  ---- 
@@ -172,7 +172,7 @@ if statusbyte between 128 and 143 ; detect if note message is "note off"
             cc := data1 ; pass them as is, no change.
             ;gosub, ShowMidiInMessage
 			;GuiControl,12:, MidiMsOut, CC %statusbyte% %chan% %cc% %data2% 
-           gosub, ShowMidiOutMessage
+           ;gosub, ShowMidiOutMessage
             gosub, sendCC 
           }  
     ; ++++++++++++++++++++++++++++++++ examples of cc rules ends ++++++++++++ 
