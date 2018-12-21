@@ -130,14 +130,16 @@ SendNote:   ;(h_midiout,Note) ; send out note messages ; this should probably be
     ;GuiControl,12:, MidiMsOutSend, NoteOut:%statusbyte% %chan% %data1% %data2% 
     ;global chan, EventType, NoteVel
     ;MidiStatus := 143 + chan
-    note = %data1%                                      ; this var is added to allow transpostion of a note
-    midiOutShortMsg(h_midiout, statusbyte, note, data2) ; call the midi funcitons with these params.
+    ;note = %data1%                                      ; this var is added to allow transpostion of a note
+    ;vel = %data2%
+    ;statusbyte = 
+    midiOutShortMsg(h_midiout, statusbyte, note, vel) ; call the midi funcitons with these params.
     
-    stb := "CC"
-    statusbyte := 176
+    stb := "NoteOn"
+    statusbyte := 144
     chan 	= %channel%
-    data1 = %NoteCC_num%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
-    data2 = %CCIntVal%	
+    data1 = %Note%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
+    data2 = %Vel%	
     MidiOutDisplay(stb, statusbyte, chan, data1, data2)
     ;gosub, ShowMidiOutMessage
 Return

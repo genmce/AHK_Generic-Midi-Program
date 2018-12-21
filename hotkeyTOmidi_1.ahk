@@ -83,5 +83,18 @@ gosub, SendPC
 }
 return
 
+;*****************************************************************
+;	HOTKEY TO NOTE ON/OFF - NOTE HELD - not tested yet
+;*****************************************************************
+
+F11::
+{
+note = 60
+Vel = 100
+statusbyte = Channel+144
+gosub, SendNote
+}
+return
+
 ; =============== OLD METHOD TO SEND MIDI  - STILL WORKS 
 ;midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) 	; Send midi output (h_midiout=port, (channel+CC statusbyte), CC_num=2lines up, CCIntVal) function located in Midi_In_Out_Library.ahk  ;

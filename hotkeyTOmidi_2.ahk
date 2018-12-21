@@ -1,5 +1,7 @@
 ; ++++++++++++++++++++++++ hotkeys here +++++++++++++++++++++++++=
 /* 
+  EDIT THIS SO THE VARS ARE THE RIGHT NAME  
+  
   Generate midi messages from computer keyboard (mouse) events,
   METHOD 2 - Thanks JimF!
   
@@ -10,6 +12,7 @@
   The loop below in the keyboardccs label detects if the var Vol is set to U, D or blank.
   The value of the var CC1 is set by the hotkeys  "- "and "=".
   The KeyboardCCs timer will do Send midi messages or not depending on the state of the CC1 varible.
+  
   VolVal is the value of the volume to send out.
   VolDelta is the amount of change of the VolVar each time the timer does 1 loop.
   The VolDelta var is set near the beginning of the generic_midi_program.
@@ -17,10 +20,8 @@
   
 */
 
-
-
 ;*************************************************
-;*          HOTKEY DEFINITIONS
+;*          HOTKEY DEFINITIONS - Method 2
 ;*************************************************
 
 ; here are a few examples of adding controller hotkeys.
@@ -46,19 +47,17 @@
 ;*      TIMER - (LOOP) TO RUN FOR CONVERSION
 ;*************************************************
 
-  /* 
-    Process Definitions for hotkey generated midi controllers.
-    Unless you are good at arrays (I am not)
-    You will need to add three statements like these, for each controller you wish to generate from a pair of hotkeys.
-  */
+/* 
+  Process Definitions for hotkey generated midi controllers.
+  Unless you are good at arrays (I am not)
+  You will need to add three statements like these, for each controller you wish to generate from a pair of hotkeys.
+*/
 
 KeyboardCCs:
 
 ;*****************************************************************
 ;   THIS SECTION CONVERTS KEY PRESS TO MIDI CC MSG
 ;*****************************************************************
-
-; =============== this is a section for volume control
 
 If CC1 = U ; increase volume up
   {
@@ -68,9 +67,9 @@ If CC1 = U ; increase volume up
       CCIntVal:= 127, CC1:=""           ; Don't go beyond the top
     gosub, SendCC
     ;midiOutShortMsg(h_midiout, (channel+175), CC_num, VolVal)    ;  ((channel+175) will make the correct statusbyte for cc message on midi chan1) CCnum var defined in autoexec section at top, VolVal is calculated three lines above.  
-   ;data1 = %CC_num%
-   ;data2 = %volVal%
-	;gosub, ShowMidiOutMessage       ; Show the midi message on the output monitor - needs revision - something weird here.
+  ;data1 = %CC_num%
+  ;data2 = %volVal%
+  ;gosub, ShowMidiOutMessage       ; Show the midi message on the output monitor - needs revision - something weird here.
   }
 If CC1= D ; decrease - volume down.
   {
