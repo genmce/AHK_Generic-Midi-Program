@@ -53,18 +53,20 @@ ifequal, data1, 20 ; if the note number coming in is note # 20
 ;*****************************************************************
 
 MidiRules: ; This label is where midi input is modified or converted to  keypress.
-
 ;*****************************************************************
 ;     EXAMPLE OF MIDI TO KEYPRESS - 
 ;*****************************************************************
-if  (stb = "NoteOn" And data1  = "36")  ; Example - if  msg is midi noteOn AND note# 36 - trigger msg box - could trigger keycommands  
+;if  (stb = "NoteOn" And data1  = "36")  ; Example - if  msg is midi noteOn AND note# 36 - trigger msg box - could trigger keycommands  
   {
-  MsgBox, 0, , Note %data1%, 1          ; show the msgbox with the note# for 1 sec
+ ; MsgBox, 0, , Note %data1%, 1          ; show the msgbox with the note# for 1 sec
 
-  ;UNCOMMENT LINE BELOW TO SEND A KEYPRESS WHEN NOTE 36 IS RECEIVED
+
+
+
+
+;UNCOMMENT LINE BELOW TO SEND A KEYPRESS WHEN NOTE 36 IS RECEIVED
   ;send , {NumLock} ; send a keypress when note number 20 is received.
   }
-
 
 ;*****************************************************************
 ; Compare statusbyte of recieved midi msg to determine type of 
@@ -81,7 +83,7 @@ if statusbyte between 144 and 159 ; detect if note message is "note on"
        ;*****************************************************************
        ;    PUT ALL "NOTE ON" TRANSFORMATIONS HERE
        ;*****************************************************************
-       ifequal, data1, 37  ;  if the note number coming in is note # 20
+       ifequal, data1, 57  ;  if the note number coming in is note # 20
         {
           MsgBox, 64, Note on Note = %data1%, , 2
           ;data1 := (data1 +1) ; transpose that note up 1 note number  
@@ -114,7 +116,7 @@ if statusbyte between 128 and 143 ; detect if note message is "note off"
   */
   ; ++++++++++++++++++++++++++++++++ examples of note rules ++++++++++ feel free to add more.
      
-    
+    /*
       ;*****************************************************************
       ; ANOTHER MIDI TO KEYPRESS EXAMPLE
       ;*****************************************************************
@@ -146,7 +148,7 @@ if statusbyte between 128 and 143 ; detect if note message is "note off"
         }	
     ; ++++++++++++++++++++++++++++++++ End of examples of note rules  ++++++++++ 
     ;} 
-
+*/
 
 ; =============== IS INCOMING MIDI MESSAGE A CC?  ---- 
 ;*****************************************************************

@@ -8,6 +8,15 @@
 /* 
   REVISE MIDI MONITOR TO USE SAME VARS AS MIDI OUT MESSAGES FOR LESS CONFUSION
   Put midi out stuff altogether - makes it easier to separate
+
+
+Bring the midi in together
+Gui
+port selection
+port testing
+port handling
+Midi out together
+
 */
 
 /* 
@@ -622,7 +631,7 @@ midiOutOpen(uDeviceID = 0) { ; Open midi port for sending individual midi messag
     Return UInt@(&strh_midiout)
   }
 
-midiOutShortMsg(h_midiout, MidiStatus,  Param1, Param2) { ;Channel,
+midiOutShortMsg(h_midiout, MidiStatus, Param1, Param2) { ;Channel,
     ;h_midiout: handle to midi output device returned by midiOutOpen
     ;EventType, Channel combined -> MidiStatus byte: http://www.harmony-central.com/MIDI/Doc/table1.html
     ;Param3 should be 0 for PChange, ChanAT, or Wheel
