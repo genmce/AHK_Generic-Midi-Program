@@ -2,35 +2,35 @@
 ;*      MIDI INPUT DETECTION 
 ;              PARSE FUNCTION
 ;*************************************************
-MidiMsgDetect(hInput, midiMsg, wMsg) ; Midi input section in calls this function each time a midi message is received. Then the midi message is broken up into parts for manipulation.  See http://www.midi.org/techspecs/midimessages.php (decimal values).
 /* 
   Midi messages are made up of several sections
   Statusbyte, midi channel, data1, data2 - they are all combined into one midi message
   https://www.nyu.edu/classes/bello/FMT_files/9_MIDI_code.pdf
-  VARS BELOW NEED TO BE RENAMED TO data1 = DATA1 AND data2 = DATA2
 */
-  {
-    global statusbyte, chan, note, cc, data1, data2, stb ; Make these vars gobal to be used in other functions
-    ; Extract Vars by extracting from midi message
-    statusbyte  :=  midiMsg & 0xFF          ; Extract statusbyte = what type of midi message and what midi channel
-    chan        := (statusbyte & 0x0f) + 1  ; WHAT MIDI CHANNEL IS THE MESSAGE ON? EXTRACT FROM STATUSBYTE
-    data1         := (midiMsg >> 8) & 0xFF  ; THIS IS DATA1 VALUE = NOTE NUMBER OR CC NUMBER
-    data2         := (midiMsg >> 16) & 0xFF ; DATA2 VALUE IS NOTE VELEOCITY OR CC VALUE
-    pitchb        := (data2 << 7) | data1         ;(midiMsg >> 8) & 0x7F7F  masking to extract the pbs  
-        
+
+MidiMsgDetect(hInput, midiMsg, wMsg) ; Midi input section in calls this function each time a midi message is received. Then the midi message is broken up into parts for manipulation.  See http://www.midi.org/techspecs/midimessages.php (decimal values).
+ {
+    global statusbyte, chan, note, cc, data1, data2, stb, pitchb ; Make these vars gobal to be used in other functions
+    ; ===============; Extract Variables by extracting from midi message
+    statusbyte :=  midiMsg & 0xFF                ; Extract statusbyte = what type of midi message and what midi channel
+    chan          := (statusbyte & 0x0f) + 1      ; WHAT MIDI CHANNEL IS THE MESSAGE ON? EXTRACT FROM STATUSBYTE
+    data1         := (midiMsg >> 8) & 0xFF     ; THIS IS DATA1 VALUE = NOTE NUMBER OR CC NUMBER
+    data2         := (midiMsg >> 16) & 0xFF   ; DATA2 VALUE IS NOTE VELEOCITY OR CC VALUE
+    pitchb        := (data2 << 7) | data1          ;(midiMsg >> 8) & 0x7F7F  masking to extract the pbs  
+  ; =============== assign stb variable for display only ; ===============
   if statusbyte between 176 and 191   ; Is message a CC
-    stb := "CC"                           ; if so then set stb to CC - only used with the midi monitor
-  if statusbyte between 144 and 159  ; Is message a Note On
-    stb := "NoteOn"                            ; Set gui var
-  if statusbyte between 128 and 143  ; Is message a Note Off?
-    stb := "NoteOff"                           ; set gui to NoteOff
-  if statusbyte between 192 and 208  ;Program Change
+    stb := "CC"                                        ; if so then set stb to CC - only used with the midi monitor
+  if statusbyte between 144 and 159   ; Is message a Note On
+    stb := "NoteOn"                               ; Set gui var
+  if statusbyte between 128 and 143   ; Is message a Note Off?
+    stb := "NoteOff"                              ; set gui to NoteOff
+  if statusbyte between 192 and 208   ;Program Change
     stb := "PC"
-  if statusbyte between 224 and 239  ; Is message a Pitch Bend
-    stb := "PitchB"                              ; Set gui to pb
-  ;gosub, ShowMidiInMessage ; show updated midi input message on midi monitor gui.
-  MidiInDisplay(stb, statusbyte, chan, data1, data2)
-    gosub, MidiRules ; run the label in file MidiRules.ahk Edit that file.
+  if statusbyte between 224 and 239   ; Is message a Pitch Bend
+    stb := "PitchB"                                 ; Set gui to pb
+
+  MidiInDisplay(stb, statusbyte, chan, data1, data2) ; ===============Show midi input on midi monitor display ; =============== 
+  gosub, MidiRules                                                        ; =============== run midirules label to organize 
   } ; end of MidiMsgDetect funciton
 
 Return
@@ -189,8 +189,6 @@ Cancel:
   Gui, 5: Destroy
 Return
 
-
-
 ResetAll:                                                                 ; program reset if needed by user
   MsgBox, 33, %version% - Reset All?, This will delete ALL settings`, and restart this program!
   IfMsgBox, OK
@@ -217,8 +215,6 @@ GuiClose:                                                               ; on x e
 Sleep 100
   ;winclose, Midi_in_2 ;close the midi in 2 ahk file
 ExitApp
-
-
 
 ;*************************************************
 ;*          GET PORTS LIST PARSE

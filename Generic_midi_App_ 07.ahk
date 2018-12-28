@@ -40,7 +40,7 @@ Generic Midi App - renamed from Generic Midi Program
   * Notes - All midi in/out lib stuff is included in Midi_In_Out_Lib.ahk, besides winmm.dll (part of windows).
 */
 #Persistent
-#SingleInstance          	                                                    ; Only run one instance
+#SingleInstance , force         	                                                    ; Only run one instance
 SendMode Input                              	                                ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%       	                                ; Ensures a consistent starting directory.
 if A_OSVersion in WIN_NT4,WIN_95,WIN_98,WIN_ME  ; If not Windows XP or greater, quit program
@@ -49,9 +49,8 @@ if A_OSVersion in WIN_NT4,WIN_95,WIN_98,WIN_ME  ; If not Windows XP or greater, 
     ExitApp
 }
 ;*************************************************
-version = Generic_Midi_App_0.7  ; Version name and number
+version = Generic_Midi_App_0.71  ; Version name and number
 ;*************************************************
-
 readini()                                            ; Load values from the ini file, via the readini function - see Midi_In_Out_Lib.ahk file
 gosub, MidiPortRefresh                  ; used to refresh the input and output port lists - see Midi_In_Out_Lib.ahk file
 port_test(numports,numports2)   ; test the ports - check for valid ports? - see Midi_In_Out_Lib.ahk file
@@ -63,9 +62,9 @@ gosub, midiMon                             ; see below - a monitor gui - see Mid
 ;*         VARIBLES TO SET @ STARTUP
 ;*************************************************
 
-Midi_Input_Monitor = 1
+;Midi_Input_Monitor = 1
 
-cc_msg = 73,74 ; This var is used in midi rules under cc transformation midirules.ahk line 162
+;cc_msg = 73,74 ; This var is used in midi rules under cc transformation midirules.ahk line 162
 ; varibles below are for keyboard cc 
 channel = 1        ; default channel =1
 CC_num = 7         ; CC 
@@ -112,28 +111,60 @@ return ;  Ends autoexec section
 ;   METHODS FOR SENDING MIDI OUT
 ;*****************************************************************
 
-SendCC: ; Send the CC midi message and show it one the midi display
+;*****************************************************************
+;   SEND OUT MIDI CONTIOUS CONTROLLERS - CC'S
+;*****************************************************************
 
-    ;GuiControl,12:, MidiMsOutSend, CCOut:%statusbyte% %chan% %cc% %data2% (THIS WAS JUST FOR TESTING DELETE WHEN FINISHED)
-    midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) ; SEND OUT THE MESSAGE > function located in Midi_In_Out_Lib.ahk
-    ; =============== set vars for display only ;  get these to be the same vars as midi send messages
-    stb := "CC"
-    statusbyte := 176
-    chan 	= %channel%
-    data1 = %CC_num%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
-    data2 = %CCIntVal%	
-    ;gosub, ShowMidiOutMessage 	; Display midi out message on gui in IO_lib
-	MidiOutDisplay(stb, statusbyte, chan, data1, data2) ; ; update the midimonitor gui
-    ;MsgBox, 0, ,sendcc triggered , 1 ; for testing purposes only
+RelayCC: ; ===============THIS FOR RELAYING CC'S OR TRANSLATING MIDI CC'S
+   ; {=============== set vars for display only ;  get these to be the same vars as midi send messages
+   stb := "CC"
+   ;statusbyte := (Channel+175)
+   ;channel  = %channel%
+   ;data1 = %CC_num%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
+   ;data2 = %CCIntVal%	
+   MidiOutDisplay(stb, statusbyte, chan , CC_num, data2) ; ; update the midimonitor gui
+   midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) ; SEND OUT THE MESSAGE > function located in Midi_In_Out_Lib.ahk;MsgBox, 0, ,sendcc triggered , 1 ; for testing purposes only
  Return
 
-SendNote:   ;(h_midiout,Note) ; send out note messages ; this should probably be a funciton but... eh
+SendCC: ; ===============use this for converting keypress into midi message
+midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) ; SEND OUT THE MESSAGE > function located in Midi_In_Out_Lib.ahk
+; =============== set vars for display only ;  get these to be the same vars as midi send messages
+stb := "CC"
+statusbyte := (Channel+174)
+;chan  = %channel%
+data1 = %CC_num%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
+data2 = %CCIntVal%	
+;gosub, ShowMidiOutMessage 	; Display midi out message on gui in IO_lib
+MidiOutDisplay(stb, statusbyte, channel, data1, data2) ; ; update the midimonitor gui
+;MsgBox, 0, ,sendcc triggered , 1 ; for testing purposes only
+Return
+
+RelayNote:   ;(h_midiout,Note) ; send out note messages ; this should probably be a funciton but... eh
   ;{
     ;GuiControl,12:, MidiMsOutSend, NoteOut:%statusbyte% %chan% %data1% %data2% 
     ;global chan, EventType, NoteVel
     ;MidiStatus := 143 + chan
     ;note = %data1%                                      ; this var is added to allow transpostion of a note
     ;vel = %data2%
+    ;statusbyte = 
+    midiOutShortMsg(h_midiout, statusbyte, data1, data2) ; call the midi funcitons with these params.
+    
+    stb := "NoteOn"
+    ;statusbyte := 144
+    ;chan 	= %channel%
+    ;data1 = %Note%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
+    ;data2 = %Vel%	
+    MidiOutDisplay(stb, statusbyte, chan, data1, data2)
+    ;gosub, ShowMidiOutMessage
+Return
+
+SendNote:   ;(h_midiout,Note) ; send out note messages ; this should probably be a funciton but... eh
+  ;{
+    ;GuiControl,12:, MidiMsOutSend, NoteOut:%statusbyte% %chan% %data1% %data2% 
+    ;global chan, EventType, NoteVel
+    ;MidiStatus := 143 + chan
+    note = %data1%                                      ; this var is added to allow transpostion of a note
+    vel = %data2%
     ;statusbyte = 
     midiOutShortMsg(h_midiout, statusbyte, note, vel) ; call the midi funcitons with these params.
     
@@ -145,7 +176,7 @@ SendNote:   ;(h_midiout,Note) ; send out note messages ; this should probably be
     MidiOutDisplay(stb, statusbyte, chan, data1, data2)
     ;gosub, ShowMidiOutMessage
 Return
-  
+
 SendPC: ; Send a progam change message - data2 is ignored - I think...
     ;gosub, ShowMidiOutMessage
 	;GuiControl,12:, MidiMsOutSend, ProgChOut:%statusbyte% %chan% %data1% %data2%

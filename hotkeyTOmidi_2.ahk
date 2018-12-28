@@ -26,10 +26,10 @@
 
 ; here are a few examples of adding controller hotkeys.
 
-=::CC1 = U     ; Detects if key  "="  is pressed, if yes CC1 var is set to U for volume up  se below
-= up::CC1 =   ; detects if  key is released 
--::CC1 = D      ;  
-- up::CC1 = 
+f5=::CC1 = U     ; Detects if key  "="  is pressed, if yes CC1 var is set to U for volume up  se below
+f5 up::CC1 =   ; detects if  key is released 
+F4::CC1 = D      ;  
+f4 up::CC1 = 
 
 /* 
 ; here are two more examples you can add

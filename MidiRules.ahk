@@ -19,10 +19,8 @@ Keep them after the statusbyte has been determined.
 Examples for each type of rule will be shown. 
 The example below is for note type message.)
 
-
 Statusbyte between 128 and 159 ; see range of values for notemsg var defined in autoexec section. "in" used because ranges of note on and note off
 { ; beginning of note block
-
 
 statusbyte between 128 and 143 ARE NOTE OFF'S
 statusbyte between 144 and 159 ARE NOTE ON'S 
@@ -33,7 +31,6 @@ Remember:
 NoteOn/Off data1 = note number, data2 = velocity of that note.
 CC - data1 = cc #, data2 = cc value 
 Program Change - data1 = pc #, data2 - ignored
-
 
 ifequal, data1, 20 ; if the note number coming in is note # 20
 {
@@ -52,6 +49,9 @@ ifequal, data1, 20 ; if the note number coming in is note # 20
 ;   it automatically runs the MidiRules label
 ;*****************************************************************
 
+
+
+
 MidiRules: ; This label is where midi input is modified or converted to  keypress.
 ;*****************************************************************
 ;     EXAMPLE OF MIDI TO KEYPRESS - 
@@ -61,12 +61,12 @@ MidiRules: ; This label is where midi input is modified or converted to  keypres
  ; MsgBox, 0, , Note %data1%, 1          ; show the msgbox with the note# for 1 sec
 
 
-
+;msgbox,,,midirules %CC_num%,1
 
 
 ;UNCOMMENT LINE BELOW TO SEND A KEYPRESS WHEN NOTE 36 IS RECEIVED
   ;send , {NumLock} ; send a keypress when note number 20 is received.
-  }
+;  }
 
 ;*****************************************************************
 ; Compare statusbyte of recieved midi msg to determine type of 
@@ -80,19 +80,19 @@ MidiRules: ; This label is where midi input is modified or converted to  keypres
 ;	{ ; beginning of note block
  
 if statusbyte between 144 and 159 ; detect if note message is "note on" 
-       ;*****************************************************************
-       ;    PUT ALL "NOTE ON" TRANSFORMATIONS HERE
-       ;*****************************************************************
-       ifequal, data1, 57  ;  if the note number coming in is note # 20
-        {
-          MsgBox, 64, Note on Note = %data1%, , 2
-          ;data1 := (data1 +1) ; transpose that note up 1 note number  
-          ;gosub, SendNote ; send the note out.
-        }
-
-        ; =============== END OF NOTE ON MESSAGES ; ===============
+ ;*****************************************************************
+ ;    PUT ALL "NOTE ON" TRANSFORMATIONS HERE
+ ;*****************************************************************
+  ;ifequal, data1, 57  ;  if the note number coming in is note # 20
+    {
+    ;MsgBox, 64, Note on Note = %data1%, Note %data1%, 1
+     ;data1 := (data1 +1) ; transpose that note up 1 note number  
+     gosub, RelayNote ; send the note out.
+    }
+   
+ ; =============== END OF NOTE ON MESSAGES ; ===============
       
-if statusbyte between 128 and 143 ; detect if note message is "note off"
+  if statusbyte between 128 and 143 ; detect if note message is "note off"
     ;*****************************************************************
     ;   PUT ALL NOTE OFF TRANSFORMATIONS HERE
     ;*****************************************************************
@@ -103,6 +103,10 @@ if statusbyte between 128 and 143 ; detect if note message is "note off"
   ; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! above  end of no edit
      
   ; =============== add your note MidiRules here ==; =============== 
+
+{
+  
+}
 
   /* 
       Write your own note filters and put them in this section.
@@ -156,29 +160,38 @@ if statusbyte between 128 and 143 ; detect if note message is "note off"
 ;*****************************************************************
 
   if statusbyte between 176 and 191 ; check status byte for cc 176-191 is the range for CC messages
-      {
+   {
+    
+    ;MsgBox,,,,1
     ;*****************************************************************
     ;   PUT ALL CC TRANSFORMATIONS HERE 
     ;***************************************************************** 
     ;++++++++++++++++++++++++++++++++ examples of CC rules ++++++++++ feel free to add more.  
-        if data1 in %cc_msg%
-          {
-            cc := (data1 + 3) ; Will change all cc#'s up 3 for a different controller number
-            ;gosub, ShowMidiOutMessage
-			;GuiControl,12:, MidiMsOut, CC %statusbyte% %chan% %cc% %data2% 
-            ;midiOutShortMsg(h_midiout, statusbyte, cc, data2)
-            gosub, sendCC
-          }
-        else if data1 not in %cc_msg% ; if the data1 value is one of these...
-          { 
-            cc := data1 ; pass them as is, no change.
-            ;gosub, ShowMidiInMessage
-			;GuiControl,12:, MidiMsOut, CC %statusbyte% %chan% %cc% %data2% 
-           ;gosub, ShowMidiOutMessage
-            gosub, sendCC 
-          }  
-    ; ++++++++++++++++++++++++++++++++ examples of cc rules ends ++++++++++++ 
+     IfEqual, data1, 7
+      {
+     ;  msgbox, ,,7,1
+       CC_num := (data1 + 3) ; Will change all cc#'s up 3 for a different controller number
+        ;CCintVal = data2
+         gosub, RelayCC
+      return   
+      }
+    ifEqual, data1, 20
+    {
+      CC_num := 60
+    ;  MsgBox,,,20,1
+       gosub, RelayCC 
+       return
+    }  
+    Else
+    {
+    CC_num := data1
+    gosub, RelayCC ; relay message unchanged 
+   ; MsgBox,,,else %data1%,1
+    return
     }
+
+; ++++++++++++++++++++++++++++++++ examples of cc rules ends ++++++++++++ 
+   }
   
   ;*****************************************************************
   ; IS INCOMING MSG A PROGRAM CHANGE MESSAGE?
@@ -202,6 +215,9 @@ if statusbyte between 128 and 143 ; detect if note message is "note off"
     }
   ;msgbox filter triggered
 ; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  end of edit section
+
+}
+
 Return
 
 
