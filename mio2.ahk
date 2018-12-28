@@ -108,6 +108,8 @@ gui,14:add,text, x305 y5, Midi Ouput ; %TheChoice2%
   Gui,14:Add, DropDownList, x270 y20 w140  Choose%TheChoice2% vMidiOutPort gDoneOutChange altsubmit , %MoList%
 Gui,14:Add, ListView, x5 r11 w220 Backgroundblack caqua Count10 vIn1,  EventType|StatB|Ch|data1|data2| 
 gui,14:Add, ListView, x+5 r11 w220 Backgroundblack cyellow Count10 vOut1,  EventType|StatB|Ch|data1|data2| 
+Gui, 14: add, Button, x10 w205 gSet_Done, Done - Reload script.
+  Gui, 14: add, Button, xp+205 w205 gCancel, Cancel
 gui,14:Show, autosize xcenter y5, MidiMonitor
 
 Return
