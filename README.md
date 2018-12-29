@@ -1,4 +1,10 @@
 # AHK_Generic-Midi-Program
+Progress happening - 
+I think I have all working
+Renamed midi lib to mio2.ahk
+
+
+
 December 15, 2018
 I have come back to work on this project again - I would love help on it.
 License for this version changed - see license
