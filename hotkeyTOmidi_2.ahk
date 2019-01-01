@@ -12,12 +12,7 @@
   The loop below in the keyboardccs label detects if the var Vol is set to U, D or blank.
   The value of the var CC1 is set by the hotkeys  "- "and "=".
   The KeyboardCCs timer will do Send midi messages or not depending on the state of the CC1 varible.
-  
-  VolVal is the value of the volume to send out.
-  VolDelta is the amount of change of the VolVar each time the timer does 1 loop.
-  The VolDelta var is set near the beginning of the generic_midi_program.
-  As is VolVal and CCnum
-  
+    
 */
 
 ;*************************************************
@@ -47,13 +42,12 @@ f4 up::CC1 =
 ;*      TIMER - (LOOP) TO RUN FOR CONVERSION
 ;*************************************************
 
+KeyboardCCs:
 /* 
   Process Definitions for hotkey generated midi controllers.
   Unless you are good at arrays (I am not)
   You will need to add three statements like these, for each controller you wish to generate from a pair of hotkeys.
 */
-
-KeyboardCCs:
 
 ;*****************************************************************
 ;   THIS SECTION CONVERTS KEY PRESS TO MIDI CC MSG

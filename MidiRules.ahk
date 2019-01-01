@@ -50,9 +50,10 @@ ifequal, data1, 20 ; if the note number coming in is note # 20
 ;*****************************************************************
 
 
-
-
 MidiRules: ; This label is where midi input is modified or converted to  keypress.
+
+
+
 ;*****************************************************************
 ;     EXAMPLE OF MIDI TO KEYPRESS - 
 ;*****************************************************************
@@ -230,7 +231,7 @@ Return
 
 /* =============================
 
-THIS SECTION MOVED TO UNDER THE HOOD
+THIS SECTION MOVED
 
 ;*************************************************
 ;*          MIDI OUTPUT LABELS TO CALL

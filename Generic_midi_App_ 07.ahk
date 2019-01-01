@@ -1,4 +1,4 @@
-;Last edited 12/19/2018 9:28 AM by genmce
+; Last edited 1/1/2019 5:03 PM by genmce
 /* 
 ;*************************************************
 ;*             GENERIC MIDI APP V.0.7 
@@ -13,7 +13,7 @@ EDIT THE OTHER FILES
 Midi messages: Here is a good reference https://stackoverflow.com/questions/29481090/explanation-of-midi-messages
 Example message: 10010011 00011011 0111111
 Where the first byte is the status byte, 2nd byte is the data1 byte, and 3rd byte is the data 2 byte
-status    data1    data2
+ status        data1        data2
 10010011 00011011 0111111
 Status is the type of message (note on/off, CC, program change... etc + the midi channel)
 Data 1 - midi note# (for note messages), cc# (for CC messages)
@@ -62,17 +62,12 @@ gosub, midiMon                             ; see below - a monitor gui - see Mid
 ;*         VARIBLES TO SET @ STARTUP
 ;*************************************************
 
-;Midi_Input_Monitor = 1
-
-;cc_msg = 73,74 ; This var is used in midi rules under cc transformation midirules.ahk line 162
-; varibles below are for keyboard cc 
+; =============== varibles below are for keyboard cc 
 channel = 1        ; default channel =1
 CC_num = 7         ; CC 
 CCIntVal = 0       ; Default zero for  CC  (data byte 2)
 CCIntDelta = 1     ; Amount to change CC (data byte 2)
-;NOT SURE IF THESE BELOW ARE USEFUL HERE?
-;CCValDown := CCIntVal > 0 ? CCIntVal-1 : 0 ;Subtract 1 from byte 2 until min value of 0 is reached.
-;CCValUp := CCIntVal < 127 ? CCIntVal+1 : 127
+
 /* 
   yourVar = 0
   yourVarDelta = 3
@@ -87,6 +82,7 @@ CCIntDelta = 1     ; Amount to change CC (data byte 2)
 */
 settimer, KeyboardCCs, 50 ; KeyBoardCCs is located in HotKeyTOMidi2.ahk > timer (loop of code) to run the KeyboardCCs at the 70ms interval
 ; settimer, MidiRules, 70 ; does not seem to work  not needed called during onmessage detect
+
 ;*****************************************************************
 ;   XYMOUSE AND JOYSTICK ROUTINES - NOT USED AT THIS TIME
 ;*****************************************************************
@@ -107,91 +103,59 @@ return ;  Ends autoexec section
   - make the gui a function call instead of a label and use the same vars that are passed to output function...
   
 */
-;*****************************************************************
-;   METHODS FOR SENDING MIDI OUT
-;*****************************************************************
 
 ;*****************************************************************
 ;   SEND OUT MIDI CONTIOUS CONTROLLERS - CC'S
 ;*****************************************************************
 
 RelayCC: ; ===============THIS FOR RELAYING CC'S OR TRANSLATING MIDI CC'S
-   ; {=============== set vars for display only ;  get these to be the same vars as midi send messages
-   stb := "CC"
-   ;statusbyte := (Channel+175)
-   ;channel  = %channel%
-   ;data1 = %CC_num%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
-   ;data2 = %CCIntVal%	
-   MidiOutDisplay(stb, statusbyte, chan , CC_num, data2) ; ; update the midimonitor gui
-   midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) ; SEND OUT THE MESSAGE > function located in Midi_In_Out_Lib.ahk;MsgBox, 0, ,sendcc triggered , 1 ; for testing purposes only
+   stb := "CC"                                                                                               ; Only used in the midi display - has nothing to do with message output    
+  MidiOutDisplay(stb, statusbyte, chan , CC_num, data2)                      ; update the midimonitor gui
+   midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal)   ; SEND OUT THE MESSAGE > function located in Midi_In_Out_Lib.ahk;MsgBox, 0, ,sendcc triggered , 1 ; for testing purposes only
  Return
 
 SendCC: ; ===============use this for converting keypress into midi message
-midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) ; SEND OUT THE MESSAGE > function located in Midi_In_Out_Lib.ahk
-; =============== set vars for display only ;  get these to be the same vars as midi send messages
-stb := "CC"
-statusbyte := (Channel+174)
-;chan  = %channel%
-data1 = %CC_num%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
-data2 = %CCIntVal%	
-;gosub, ShowMidiOutMessage 	; Display midi out message on gui in IO_lib
-MidiOutDisplay(stb, statusbyte, channel, data1, data2) ; ; update the midimonitor gui
-;MsgBox, 0, ,sendcc triggered , 1 ; for testing purposes only
+  midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) ; SEND OUT THE MESSAGE > function located in Midi_In_Out_Lib.ahk
+  ; =============== set vars for display only ;  get these to be the same vars as midi send messages
+  stb := "CC" 
+  statusbyte := (Channel+174)
+  data1 = %CC_num%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
+  data2 = %CCIntVal%	    
+  MidiOutDisplay(stb, statusbyte, channel, data1, data2) ; ; update the midimonitor gui
+  ;MsgBox, 0, ,sendcc triggered , 1 ; for testing purposes only
 Return
 
 RelayNote:   ;(h_midiout,Note) ; send out note messages ; this should probably be a funciton but... eh
-  ;{
-    ;GuiControl,12:, MidiMsOutSend, NoteOut:%statusbyte% %chan% %data1% %data2% 
-    ;global chan, EventType, NoteVel
-    ;MidiStatus := 143 + chan
-    ;note = %data1%                                      ; this var is added to allow transpostion of a note
-    ;vel = %data2%
-    ;statusbyte = 
-    midiOutShortMsg(h_midiout, statusbyte, data1, data2) ; call the midi funcitons with these params.
-    
-    stb := "NoteOn"
-    ;statusbyte := 144
-    ;chan 	= %channel%
-    ;data1 = %Note%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
-    ;data2 = %Vel%	
-    MidiOutDisplay(stb, statusbyte, chan, data1, data2)
-    ;gosub, ShowMidiOutMessage
+  midiOutShortMsg(h_midiout, statusbyte, data1, data2) ; call the midi funcitons with these params.
+  stb := "NoteOn"
+  MidiOutDisplay(stb, statusbyte, chan, data1, data2)
 Return
 
 SendNote:   ;(h_midiout,Note) ; send out note messages ; this should probably be a funciton but... eh
-  ;{
-    ;GuiControl,12:, MidiMsOutSend, NoteOut:%statusbyte% %chan% %data1% %data2% 
-    ;global chan, EventType, NoteVel
-    ;MidiStatus := 143 + chan
-    note = %data1%                                      ; this var is added to allow transpostion of a note
-    vel = %data2%
-    ;statusbyte = 
-    midiOutShortMsg(h_midiout, statusbyte, note, vel) ; call the midi funcitons with these params.
-    
+  note = %data1%                                      ; this var is added to allow transpostion of a note
+  vel = %data2%
+  midiOutShortMsg(h_midiout, statusbyte, note, vel) ; call the midi funcitons with these params.
     stb := "NoteOn"
     statusbyte := 144
     chan 	= %channel%
     data1 = %Note%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
     data2 = %Vel%	
     MidiOutDisplay(stb, statusbyte, chan, data1, data2)
-    ;gosub, ShowMidiOutMessage
 Return
 
 SendPC: ; Send a progam change message - data2 is ignored - I think...
-    ;gosub, ShowMidiOutMessage
-	;GuiControl,12:, MidiMsOutSend, ProgChOut:%statusbyte% %chan% %data1% %data2%
     midiOutShortMsg(h_midiout, (Channel+191), pc, data2)
-     stb := "PC"
+    stb := "PC"
     statusbyte := 192
     chan 	= %channel%
     data1 = %PC%			; set value of the data1 to the above cc_num for display on the midi out window (only needed if you want to see output)	
     data2 = 
     MidiOutDisplay(stb, statusbyte, chan, data1, data2)
- /* 
-   Method could be developed for other midi messages like after touch...etc.
- */
 Return
 
+/* 
+   Method could be developed for other midi messages like after touch...etc.
+ */
 ;*************************************************
 ;*              INCLUDE FILES -
 ;*  these files need to be in the same folder
@@ -202,5 +166,3 @@ Return
 ;#include joystuff.ahk              ; this file contains: joystick stuff.   
 ;#include xy_mouse.ahk
 #Include mio2.ahk       ; this file replaced the midi in out lib below - for now
-
-;#Include Midi_In_Out_Lib.ahk    	; this file contains: (DO NOT EDIT THIS FILE) all the dialogs to set up midi ports and midi message handling.

@@ -71,15 +71,14 @@ Loop 																	; loop to detect the state of the hotkey, held down.
 }
 Return
 
-
 ;*****************************************************************
 ;	HOTKEY TO PROGRAM CHANGE - MIDI OUT
 ;*****************************************************************
 
 F10::
 {
-PC = 3
-gosub, SendPC
+	PC = 3										; Program change number to send 
+	gosub, SendPC
 }
 return
 
@@ -89,12 +88,12 @@ return
 
 F11::
 {
-note = 60
-Vel = 100
-statusbyte = Channel+144
-gosub, SendNote
+	note = 60 								; MIDI NOTE NUMBER TO SEND OUT
+	Vel = 100								; VELOCITY OF NOTE NUMBER TO SEND OUT
+	statusbyte = Channel+144	; NOTE ON MESSAGE
+	gosub, SendNote
 }
 return
 
-; =============== OLD METHOD TO SEND MIDI  - STILL WORKS 
+; =============== OLD METHOD TO SEND MIDI  - STILL WORKS  ; ================ UNCOMMENT THE LINE BELOW OR USE IT IN YOUR KEY METHODS
 ;midiOutShortMsg(h_midiout, (Channel+175), CC_num, CCIntVal) 	; Send midi output (h_midiout=port, (channel+CC statusbyte), CC_num=2lines up, CCIntVal) function located in Midi_In_Out_Library.ahk  ;

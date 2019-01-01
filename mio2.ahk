@@ -31,19 +31,18 @@ MidiMsgDetect(hInput, midiMsg, wMsg) ; Midi input section in calls this function
 
   MidiInDisplay(stb, statusbyte, chan, data1, data2) ; ===============Show midi input on midi monitor display ; =============== 
   gosub, MidiRules                                                        ; =============== run midirules label to organize 
-  } ; end of MidiMsgDetect funciton
-
+  } ; =============== ; end of MidiMsgDetect funciton
 Return
 
 ;*************************************************
 ;*    SHOW MIDI INPUT ON GUI MONITOR
 ;*************************************************
 
-MidiInDisplay(stb, statusbyte, chan, data1, data2) ; ; update the midimonitor gui
+MidiInDisplay(stb, statusbyte, chan, data1, data2)   ; update the midimonitor gui - see below
 {
 Gui,14:default
-Gui,14:ListView, In1 ; see the first listview midi in monitor
-  LV_Add("",stb,statusbyte,chan,data1,data2)
+Gui,14:ListView, In1                                             ; see the first listview midi in monitor
+  LV_Add("",stb,statusbyte,chan,data1,data2)  ; Setting up the columns for gui
   LV_ModifyCol(1,"center")
   LV_ModifyCol(2,"center")
   LV_ModifyCol(3,"center")
@@ -56,29 +55,11 @@ Gui,14:ListView, In1 ; see the first listview midi in monitor
 }
 return
 
-; Old - working method revising to a function above 
-/*  
-ShowMidiInMessage: ; update the midimonitor gui
-Gui,14:default
-Gui,14:ListView, In1 ; see the first listview midi in monitor
-  LV_Add("",stb,statusbyte,chan,data1,data2)
-  LV_ModifyCol(1,"center")
-  LV_ModifyCol(2,"center")
-  LV_ModifyCol(3,"center")
-  LV_ModifyCol(4,"center")
-  LV_ModifyCol(5,"center")
-  If (LV_GetCount() > 10)
-    {
-      LV_Delete(1)
-    }
-return
-*/
 ;*************************************************
 ;*    SHOW MIDI OUTPUT ON GUI MONITOR
 ;*************************************************
 
-;ShowMidiOutMessage: ; update the midimonitor gui 
-MidiOutDisplay(stb, statusbyte, chan, data1, data2) ; ; update the midimonitor gui
+MidiOutDisplay(stb, statusbyte, chan, data1, data2) ;  update the midimonitor gui
 {
 Gui,14:default
 Gui,14:ListView, Out1 ; see the second listview midi out monitor
@@ -100,7 +81,7 @@ return
 ;*************************************************
 
 midiMon: ; midi monitor gui with listviews
-gui,14:destroy
+gui,14:destroy 
 gui,14:default
 gui,14:add,text, x80 y5, Midi Input ; %TheChoice%
   Gui,14:Add, DropDownList, x40 y20 w140 Choose%TheChoice% vMidiInPort gDoneInChange altsubmit, %MiList%  ; (
@@ -115,7 +96,7 @@ gui,14:Show, autosize xcenter y5, MidiMonitor
 Return
 
 ;*************************************************
-;*              MIDI SET GUI 
+;*              MIDI SET GUI  - midi setup
 ;*************************************************
 
 ; =============== MIDI INPUT SELECTION ; ==============
@@ -130,7 +111,7 @@ MidiSet:                                                                    ; mi
   Gui, 4: Font, s8
   Gui, 4: Add, Text, x10 y+10 w175 Center , Midi In Port                 ;Just text label
   Gui, 4: font, s8
-  ; =============== midi ins list box; ===============
+  ; =============== MIDI INPUT SELECTION ; ===============
   Gui, 4: Add, ListBox, x10 w200 h100  Choose%TheChoice% vMidiInPort gDoneInChange AltSubmit, %MiList% ; --- midi in listing of ports
     ;Gui,  Add, DropDownList, x10 w200 h120 Choose%TheChoice% vMidiInPort gDoneInChange altsubmit, %MiList%  ; ( you may prefer this style, may need tweak)
 
@@ -141,16 +122,13 @@ MidiSet:                                                                    ; mi
   ;Gui,  Add, DropDownList, x220 y97 w200 h120 Choose%TheChoice2% vMidiOutPort gDoneOutChange altsubmit , %MoList%
   Gui, 4: add, Button, x10 w205 gSet_Done, Done - Reload script.
   Gui, 4: add, Button, xp+205 w205 gCancel, Cancel
-  ;gui, 4: add, checkbox, x10 y+10 vNotShown gDontShow, Do Not Show at startup.
-  ;IfEqual, NotShown, 1
-  ;guicontrol, 4:, NotShown, 1
   Gui, 4: show , , %version% Midi Port Selection                                ; main window title and command to show it.
 
 Return
 
 ; =============== gui done change stuff - see label in both gui listbox line ; ===============
   ;44444444444444444444444444 NEED TO EDIT THIS TO REFLECT CHANGES IN GENMCE PRIOR TO SEND OUT
-DoneInChange:                           ; 
+DoneInChange:                                   ; Run this when midi input port has changed 
   gui +lastfound
   Gui, Submit, NoHide
   Gui, Flash
@@ -160,7 +138,7 @@ DoneInChange:                           ;
       UDPort:= MidiInPort - 1, MidiInDevice:= UDPort ; probably a much better way do this, I took this from JimF's qwmidi without out editing much.... it does work same with doneoutchange below.
   GuiControl, 4:, UDPort, %MidiIndevice%
   WriteIni()
-  ;MsgBox, 32, , midi in device = %MidiInDevice%`nmidiinport = %MidiInPort%`nport = %port%`ndevice= %device% `n UDPort = %UDport% ; only for testing
+  ;MsgBox, 32, , midi in device = %MidiInDevice%`nmidiinport = %MidiInPort%`nport = %port%`ndevice= %device% `n UDPort = %UDport% ; ===============UNCOMMENT FOR TESTING IF NEEDED
 Return
 
 DoneOutChange:
@@ -176,7 +154,7 @@ DoneOutChange:
   ;Gui, Destroy
 Return
 
-Set_Done:                                           ; aka reload program, called from midi selection gui
+Set_Done:                                                                    ; aka reload program, called from midi selection gui
   Gui, 3: Destroy
   Gui, 4: Destroy
    sleep, 100
@@ -219,9 +197,10 @@ Sleep 100
 ExitApp
 
 ;*************************************************
-;*          GET PORTS LIST PARSE
+;*          GET PORTS LIST AND PARSE
 ;*************************************************
-MidiPortRefresh: ; get the list of ports
+
+MidiPortRefresh:                                    ; get the list of ports
 
  MIlist := MidiInsList(NumPorts)        ; Get midi inputs list 
 	Loop Parse, MIlist, | 
@@ -238,14 +217,14 @@ MOlist := MidiOutsList(NumPorts2)   ; Get midi outputs list
 return
 
 ;*************************************************
-;*          Check ini file for previous configuration
+;*          CHECK .INI file for previous configuration
 ;*************************************************
 ;-----------------------------------------------------------------
 
 ReadIni()                                         ; Read .ini file to load port settings - also set up the tray Menu
   {
     Menu, tray, add, MidiSet           ; set midi ports tray item
-    Menu, tray, add, ResetAll          ; Delete the ini file for testing --------------------------------
+    Menu, tray, add, ResetAll          ; DELETE THE .INI FILE - a new config needs to be set up
     menu, tray, add, MidiMon        ; Menu item for the midi monitor
     global MidiInDevice, MidiOutDevice, version ; version var is set at the beginning.
     IfExist, %version%.ini
@@ -253,28 +232,25 @@ ReadIni()                                         ; Read .ini file to load port 
         IniRead, MidiInDevice, %version%.ini, Settings, MidiInDevice , %MidiInDevice%            ; read the midi In port from ini file
         IniRead, MidiOutDevice, %version%.ini, Settings, MidiOutDevice , %MidiOutDevice%   ; read the midi out port from ini file
       }
-    Else ; no ini exists and this is either the first run or reset settings.
+    Else                                                                                    ; no ini exists and this is either the first run or reset settings.
       {
-        MsgBox, 1, No ini file found, Select midi ports?            ; Prompt to select midi ports 
+        MsgBox, 1, No ini file found, Select midi ports?      ; Prompt user to select midi ports 
         IfMsgBox, Cancel
           ExitApp
         IfMsgBox, yes
-          gosub, midiset
-        ;WriteIni()
+          gosub, midiset     ; run the midi setup routine
       }
-  }
+  } ; endof readini
 
 ;*************************************************
 ;*   WRITE TO INI FILE FUNCTION  + UPDATE INI WHENEVER SAVED PARAMETERS CHANGE
 ;*************************************************
 
-
 WriteIni()                                                                  ; Write selections to .ini file 
   {
     global MidiInDevice, MidiOutDevice, version
-   
-    IfNotExist, %version%.ini                                   ; if no .ini 
-      FileAppend,, %version%.ini                              ; make  .ini with the following entries.
+      IfNotExist, %version%.ini                                   ; if no .ini 
+        FileAppend,, %version%.ini                              ; make  .ini with the following entries.
     IniWrite, %MidiInDevice%, %version%.ini, Settings, MidiInDevice
     IniWrite, %MidiOutDevice%, %version%.ini, Settings, MidiOutDevice
   }
@@ -287,7 +263,7 @@ port_test(numports,numports2)                             ; confirm selected por
   {
     global midiInDevice, midiOutDevice, midiok    ; Set varibles to golobal 
     
-    ; ----- In port selection test based on numports
+    ;; =============== In port selection test based on numports ; ===============
     If MidiInDevice not Between 0 and %numports% 
       {
         MidiIn := 0 ; this var is just to show if there is an error - set if the ports are valid = 1, invalid = 0
@@ -301,7 +277,7 @@ port_test(numports,numports2)                             ; confirm selected por
       }
     Else
       {
-        MidiIn := 1                                                   ; setting var to non-error state or valid
+        MidiIn := 1                                                     ; setting var to non-error state or valid
       }
     ; =============== out port selection test based on numports2 ; ===============
     If  MidiOutDevice not Between 0 and %numports2%
@@ -337,20 +313,18 @@ port_test(numports,numports2)                             ; confirm selected por
 Return
 ; =============== end of port testing ; ===============
 
-
 ;*************************************************
 ;*          MIDI OUTPUT - UNDER THE HOOD
 ;*************************************************
-; =============== Midi output detection ; ===============
 
+; =============== Midi output detection ; ===============
 MidiOut:                                                                 ; label to load new settings from midi out menu item
   OpenCloseMidiAPI()
   h_midiout := midiOutOpen(MidiOutDevice)   ; OUTPUT PORT 1 SEE BELOW FOR PORT 2
 return
 
 
-
-MidiOutsList(ByRef NumPorts)
+MidiOutsList(ByRef NumPorts)                        ; works with unicode now
   { ; Returns a "|"-separated list of midi output devices
     local List, MidiOutCaps, PortName, result, midisize
   (A_IsUnicode)? offsetWordStr := 64: offsetWordStr := 32
@@ -374,37 +348,11 @@ MidiOutsList(ByRef NumPorts)
     Return SubStr(List,2)
   }
 
-; ===============
-/*  old code - did not work with unicode - LEFT FOR REFERENCE ONLY
-MidiOutsList(ByRef NumPorts)
-  { ; Returns a "|"-separated list of midi output devices
-    local List, MidiOutCaps, PortName, result
-    VarSetCapacity(MidiOutCaps, 50, 0)
-    VarSetCapacity(PortName, 32)                       ; PortNameSize 32
-
-    NumPorts := DllCall("winmm.dll\midiOutGetNumDevs") ; #midi output devices on system, First device ID = 0
-
-    Loop %NumPorts%
-      {
-        result := DllCall("winmm.dll\midiOutGetDevCapsA", UInt,A_Index-1, UInt,&MidiOutCaps, UInt,50, UInt)
-        If (result OR ErrorLevel)
-          {
-            List .= "|-Error-"
-            Continue
-          }
-        DllCall("RtlMoveMemory", Str,PortName, UInt,&MidiOutCaps+8, UInt,32) ; PortNameOffset 8, PortNameSize 32
-        List .= "|" PortName
-      }
-    Return SubStr(List,2)
-  }
-  */
-; ===============
-;---------------------midiOut from TomB and Lazslo and JimF --------------------------------
+; ===============-midiOut from TomB and Lazslo and JimF --------------------------------
 ;THATS THE END OF MY STUFF (JimF) THE REST ID WHAT LASZLo AND PAXOPHONE WERE USING ALREADY
 ;AHK FUNCTIONS FOR MIDI OUTPUT - calling winmm.dll
 ;http://msdn.microsoft.com/library/default.asp?url=/library/en-us/multimed/htm/_win32_multimedia_functions.asp
 ;Derived from Midi.ahk dated 29 August 2008 - streaming support removed - (JimF)
-
 
 OpenCloseMidiAPI() {  ; at the beginning to load, at the end to unload winmm.dll
     static hModule
@@ -416,7 +364,7 @@ OpenCloseMidiAPI() {  ; at the beginning to load, at the end to unload winmm.dll
       }
   }
 
-; ===============FUNCTIONS FOR SENDING SHORT MESSAGES
+; ===============FUNCTIONS FOR SENDING SHORT MESSAGES ; ===============
 
 midiOutOpen(uDeviceID = 0) { ; Open midi port for sending individual midi messages --> handle
     strh_midiout = 0000
@@ -428,6 +376,9 @@ midiOutOpen(uDeviceID = 0) { ; Open midi port for sending individual midi messag
       }
     Return UInt@(&strh_midiout)
   }
+;*****************************************************************
+;   ALL MIDI SENT TO THE OUTPUT MIDI PORT - CALLS THIS FUNCTION
+;*****************************************************************
 
 midiOutShortMsg(h_midiout, MidiStatus,  Param1, Param2) { ;Channel,
     ;h_midiout: handle to midi output device returned by midiOutOpen
@@ -458,7 +409,7 @@ midiOutShortMsg(h_midiout, MidiStatus,  Param1, Param2) { ;Channel,
         MsgBox There was an Error Sending the midi event: (%result%`, %ErrorLevel%)
         Return -1
       }
-  }
+  }     ; ends midi out function
 
 midiOutClose(h_midiout) {  ; Close MidiOutput
     Loop 9 {
@@ -523,8 +474,6 @@ PokeInt(p_value, p_address) { ; Windows 2000 and later
     DllCall("ntdll\RtlFillMemoryUlong", UInt,p_address, UInt,4, UInt,p_value)
 }
 
-
-
 ;*************************************************
 ;*      MIDI INPUT / OUTPUT UNDER THE HOOD
 ;*************************************************
@@ -537,11 +486,11 @@ PokeInt(p_value, p_address) { ; Windows 2000 and later
 ; =============== midi in =====================
 
 Midiin_go:
-DeviceID := MidiInDevice                 ; midiindevice from IniRead above assigned to deviceid
+DeviceID := MidiInDevice                  ; midiindevice from IniRead above assigned to deviceid
 CALLBACK_WINDOW := 0x10000    ; from orbiks code for midi input
 
-Gui, +LastFound                               ; set up the window for midi data to arrive.
-hWnd := WinExist()                              ;MsgBox, 32, , line 176 - mcu-input  is := %MidiInDevice% , 3 ; this is just a test to show midi device selection
+Gui, +LastFound                                ; set up the window for midi data to arrive.
+hWnd := WinExist()                           ;MsgBox, 32, , line 176 - mcu-input  is := %MidiInDevice% , 3 ; this is just a test to show midi device selection
 
 hMidiIn =
 VarSetCapacity(hMidiIn, 4, 0)
@@ -561,8 +510,7 @@ hMidiIn := NumGet(hMidiIn)              ; because midiInOpen writes the value in
       }
 
 OpenCloseMidiAPI()
-  
-  ; ----- the OnMessage listeners ----
+    ; ----- the OnMessage listeners ----
     ; LEFT HERE FOR REFERENCE
       ; #define MM_MIM_OPEN 0x3C1 /* MIDI input */
       ; #define MM_MIM_CLOSE 0x3C2
@@ -571,7 +519,7 @@ OpenCloseMidiAPI()
       ; #define MM_MIM_ERROR 0x3C5
       ; #define MM_MIM_LONGERROR 0x3C6
 
-    OnMessage(0x3C1, "MidiMsgDetect")  ; 
+    OnMessage(0x3C1, "MidiMsgDetect")  ;  See top of this file for function called when a midi message is detected
     OnMessage(0x3C2, "MidiMsgDetect")  
     OnMessage(0x3C3, "MidiMsgDetect")
     OnMessage(0x3C4, "MidiMsgDetect")
@@ -608,27 +556,6 @@ MidiInsList(ByRef NumPorts)                                             ; should
     Return SubStr(List,2)
   }
 
-/*  old code - Before Unicode update - LEFT FOR REFRENCE ONLY
-{ ; Returns a "|"-separated list of midi output devices
-    local List, MidiInCaps, PortName, result
-    VarSetCapacity(MidiInCaps, 50, 0)
-    VarSetCapacity(PortName, 32)                       ; PortNameSize 32
-
-    NumPorts := DllCall("winmm.dll\midiInGetNumDevs") ; #midi output devices on system, First device ID = 0
-
-    Loop %NumPorts%
-      {
-        result := DllCall("winmm.dll\midiInGetDevCapsA", UInt,A_Index-1, UInt,&MidiInCaps, UInt,50, UInt)
-        If (result OR ErrorLevel) {
-            List .= "|-Error-"
-            Continue
-          }
-        DllCall("RtlMoveMemory", Str,PortName, UInt,&MidiInCaps+8, UInt,32) ; PortNameOffset 8, PortNameSize 32
-        List .= "|" PortName
-      }
-    Return SubStr(List,2)
-  }
-*/
 MidiInGetNumDevs() { ; Get number of midi output devices on system, first device has an ID of 0
     Return DllCall("winmm.dll\midiInGetNumDevs")
   }
